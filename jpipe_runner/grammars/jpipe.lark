@@ -1,0 +1,41 @@
+start: model
+
+model: load_stmt* class_def*
+
+load_stmt: "load" STRING
+
+class_def: CLASS_KIND ID ("implements" ID)? (justification_pattern | composition)
+
+justification_pattern: "{" (variable | instruction | support )+ "}"
+variable: VARIABLE_KIND ID instruction
+instruction: "is" STRING
+support: ID "supports" ID
+
+composition: "{" (composition_variable | composition_instruction )+ "}"
+composition_variable: "justification" ID
+composition_instruction: composition_variable "is" composition_information
+composition_information: ID "with" ID
+
+VARIABLE_KIND.2: "evidence"
+               | "strategy"
+               | "sub-conclusion"
+               | "conclusion"
+               | "@support"
+
+CLASS_KIND.3: "justification"
+            | "pattern"
+            | "composition"
+
+STRING: /"(\\.|[^"\\])*"|'(\\.|[^'\\])*'/
+
+ID: /[a-zA-Z_]\w*/
+
+
+%import common.WS
+%ignore WS
+
+SL_COMMENT: /\/\/[^\n\r]*/
+ML_COMMENT: /\/\*[\s\S]*?\*\//
+
+%ignore SL_COMMENT
+%ignore ML_COMMENT
