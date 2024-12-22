@@ -173,3 +173,7 @@ cython_debug/
 # Python venv files
 /bin
 pyvenv.cfg
+
+# Misc files
+/.vscode
+.DS_Store
