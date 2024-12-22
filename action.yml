@@ -1,0 +1,28 @@
+name: "jPipe Runner"
+description: "GitHub Action to run justification diagram of jpipe"
+author: "Jason Lyu"
+
+inputs:
+  example_input:
+    description: "An example input parameter"
+    required: true
+    default: "default_value"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.13"
+
+    - name: Install Dependencies
+      run: pip install -r requirements.txt
+      shell: bash
+
+    - name: Run jPipe Runner
+      env:
+        INPUT_EXAMPLE: ${{ inputs.example_input }}
+      run: |
+        python -m jpipe_runner
+      shell: bash
