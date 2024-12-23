@@ -6,7 +6,7 @@ This module contains the model definitions of Justification Diagram.
 """
 
 from dataclasses import dataclass
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional
 
 from jpipe_runner.enums import ClassType, VariableType
 
@@ -62,7 +62,7 @@ class ClassDef:
     class_type: ClassType
     name: str
     pattern: Optional[str] = None
-    body: Union[JustificationDef | CompositionDef] = None
+    body: JustificationDef | CompositionDef = None
 
 
 @dataclass(order=True)
