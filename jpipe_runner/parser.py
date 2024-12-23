@@ -47,6 +47,8 @@ def parse_jd_file(filename: str) -> ModelDef:
 
 
 def load_jd_file(filename: str, _loaded: set = None) -> ModelDef:
+    """load_jd_file is able to load JD files recursively."""
+
     if _loaded is None:
         _loaded = set()
     if (jd_file := os.path.abspath(filename)) in _loaded:
@@ -58,9 +60,7 @@ def load_jd_file(filename: str, _loaded: set = None) -> ModelDef:
     model = parse_jd_file(filename=jd_file)
 
     for ld in model.load_stmts.copy():
-        # recursively load JS files
         new_model = load_jd_file(ld.path, _loaded)
-        # update loaded model to current model.
         model.update(new_model)
 
     return model
