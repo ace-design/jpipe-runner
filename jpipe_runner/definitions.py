@@ -5,9 +5,9 @@ jpipe_runner.definitions
 This module contains the definitions of Justification Diagram.
 """
 
+from dataclasses import dataclass
 from enum import Enum
-from pprint import pformat
-from typing import Any, Optional
+from typing import Any, Callable, Optional, Union
 
 
 class ClassType(Enum):
@@ -26,83 +26,46 @@ class VariableType(Enum):
     SUPPORT = "@support"
 
 
-class LoadStmt:
-    def __init__(self,
-                 path: str,
-                 ):
-        self.path = path
-
-    def __repr__(self):
-        return f"<LoadStmt path={repr(self.path)}>"
-
-
-class ClassDef:
-    def __init__(self,
-                 class_type: ClassType,
-                 name: str,
-                 pattern: Optional[str] = None,
-                 ):
-        # justification / pattern / composition
-        self.class_type = class_type
-        self.name = name
-        self.pattern = pattern
-        self.body = None
-
-    def __repr__(self):
-        return f"<ClassDef type={self.class_type} name={self.name} implements={self.pattern} body={self.body}>"
-
-
+@dataclass(order=True, unsafe_hash=True)
 class VariableDef:
-    def __init__(self,
-                 var_type: VariableType,
-                 name: str,
-                 description: str,
-                 ):
-        self.var_type = var_type
-        self.name = name
-        self.description = description
-        # TODO: mapped action function
-        self.action = lambda: True
-
-    def __repr__(self):
-        return f"<VariableDef type={self.var_type} name={self.name} desc={repr(self.description)}>"
+    var_type: VariableType
+    name: str
+    description: str
+    # TODO: mapped action function
+    action: Optional[Callable] = lambda: True
 
 
+@dataclass(order=True, unsafe_hash=True)
 class SupportDef:
-    def __init__(self,
-                 left: str,
-                 right: str,
-                 ):
-        self.left = left
-        self.right = right
-
-    def __repr__(self):
-        return f"<SupportDef {self.left} -> {self.right}>"
+    left: str
+    right: str
 
 
+@dataclass(order=True)
 class JustificationDef:
-    def __init__(self,
-                 variables: Optional[list[VariableDef]] = None,
-                 supports: Optional[list[SupportDef]] = None,
-                 ):
-        if variables is None:
-            variables = []
-        if supports is None:
-            supports = []
-        self.variables = variables
-        self.supports = supports
-
-    def __repr__(self):
-        return f"<JustificationDef vars={pformat(self.variables)} supports={pformat(self.supports)}>"
+    variables: Optional[list[VariableDef]]
+    supports: Optional[list[SupportDef]]
 
 
+@dataclass(order=True)
 class CompositionDef:
-    def __init__(self,
-                 compositions: Optional[list[Any]] = None,
-                 ):
-        if compositions is None:
-            compositions = []
-        self.compositions = compositions
+    compositions: Optional[list[Any]]
 
-    def __repr__(self):
-        return f"<CompositionDef compositions={pformat(self.compositions)}>"
+
+@dataclass(order=True)
+class LoadStmt:
+    path: str
+
+
+@dataclass(order=True)
+class ClassDef:
+    class_type: ClassType
+    name: str
+    pattern: Optional[str] = None
+    body: Union[JustificationDef | CompositionDef] = None
+
+
+@dataclass(order=True)
+class ModelDef:
+    load_stmts: list[LoadStmt]
+    class_defs: list[ClassDef]
