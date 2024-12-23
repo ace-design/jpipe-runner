@@ -46,6 +46,26 @@ def parse_jd_file(filename: str) -> ModelDef:
     return parse_jd(source=content)
 
 
+def load_jd_file(filename: str, _loaded: set = None) -> ModelDef:
+    if _loaded is None:
+        _loaded = set()
+    if (jd_file := os.path.abspath(filename)) in _loaded:
+        raise RecursionError(f"justification file '{filename}' already loaded")
+
+    # save loaded JD file path
+    _loaded.add(jd_file)
+
+    model = parse_jd_file(filename=jd_file)
+
+    for ld in model.load_stmts.copy():
+        # recursively load JS files
+        new_model = load_jd_file(ld.path, _loaded)
+        # update loaded model to current model.
+        model.update(new_model)
+
+    return model
+
+
 def _test():
     pass
 
