@@ -67,5 +67,11 @@ class ClassDef:
 
 @dataclass(order=True)
 class ModelDef:
-    load_stmts: set[LoadStmt]
-    class_defs: dict[str, ClassDef]
+    load_stmts: Optional[set[LoadStmt]] = None
+    class_defs: Optional[dict[str, ClassDef]] = None
+
+    def __post_init__(self):
+        if self.load_stmts is None:
+            self.compositions = set()
+        if self.class_defs is None:
+            self.class_defs = dict()
