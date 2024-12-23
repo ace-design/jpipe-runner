@@ -67,8 +67,8 @@ class JPipeTransformer(Transformer):
                               items: Iterable[VariableDef | SupportDef],
                               ) -> JustificationDef:
         return JustificationDef(
-            variables=set(i for i in items if isinstance(i, VariableDef)),
             supports=set(i for i in items if isinstance(i, SupportDef)),
+            variables=dict((i.name, i) for i in items if isinstance(i, VariableDef)),
         )
 
     @v_args(inline=True)
@@ -95,7 +95,7 @@ class JPipeTransformer(Transformer):
 
     def composition(self, items: Iterable[Any]) -> CompositionDef:
         return CompositionDef(
-            compositions=set(i for i in items),
+            compositions=dict((str(i), i) for i in items),
         )
 
     # TODO: add support for composition class.

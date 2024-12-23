@@ -11,7 +11,7 @@ from typing import Any, Callable, Optional
 from jpipe_runner.enums import ClassType, VariableType
 
 
-@dataclass(order=True, unsafe_hash=True)
+@dataclass(order=True)
 class VariableDef:
     var_type: VariableType
     name: str
@@ -33,23 +33,23 @@ class SupportDef:
 
 @dataclass(order=True)
 class JustificationDef:
-    variables: Optional[set[VariableDef]] = None
     supports: Optional[set[SupportDef]] = None
+    variables: Optional[dict[str, VariableDef]] = None
 
     def __post_init__(self):
-        if self.variables is None:
-            self.variables = set()
         if self.supports is None:
             self.supports = set()
+        if self.variables is None:
+            self.variables = dict()
 
 
 @dataclass(order=True)
 class CompositionDef:
-    compositions: Optional[set[Any]] = None
+    compositions: Optional[dict[str, Any]] = None
 
     def __post_init__(self):
         if self.compositions is None:
-            self.compositions = set()
+            self.compositions = dict()
 
 
 @dataclass(order=True)
