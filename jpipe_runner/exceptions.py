@@ -12,3 +12,7 @@ class RunnerException(Exception):
 
 class SyntaxException(RunnerException):
     """A syntax error occurred."""
+
+
+class UnsupportedException(RunnerException):
+    """An unsupported error occurred."""
