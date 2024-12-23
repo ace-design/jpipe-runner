@@ -1,29 +1,14 @@
 """
-jpipe_runner.definitions
-~~~~~~~~~~~~~~~~~~~~~~~~
+jpipe_runner.models
+~~~~~~~~~~~~~~~~~~~
 
-This module contains the definitions of Justification Diagram.
+This module contains the model definitions of Justification Diagram.
 """
 
 from dataclasses import dataclass
-from enum import Enum
 from typing import Any, Callable, Optional, Union
 
-
-class ClassType(Enum):
-    """justification / pattern / composition"""
-    JUSTIFICATION = "justification"
-    PATTERN = "pattern"
-    COMPOSITION = "composition"
-
-
-class VariableType(Enum):
-    """evidence / strategy / sub-conclusion / conclusion / @support"""
-    EVIDENCE = "evidence"
-    STRATEGY = "strategy"
-    SUB_CONCLUSION = "sub-conclusion"
-    CONCLUSION = "conclusion"
-    SUPPORT = "@support"
+from jpipe_runner.enums import ClassType, VariableType
 
 
 @dataclass(order=True, unsafe_hash=True)

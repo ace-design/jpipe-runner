@@ -11,15 +11,14 @@ import lark
 from lark import Transformer, v_args
 
 from jpipe_runner import utils
-from jpipe_runner.definitions import (ClassType,
-                                      VariableType,
-                                      ModelDef,
-                                      LoadStmt,
-                                      ClassDef,
-                                      VariableDef,
-                                      SupportDef,
-                                      JustificationDef,
-                                      CompositionDef)
+from jpipe_runner.models import (ModelDef,
+                                 LoadStmt,
+                                 ClassDef,
+                                 VariableDef,
+                                 SupportDef,
+                                 JustificationDef,
+                                 CompositionDef)
+from jpipe_runner.enums import ClassType, VariableType
 from jpipe_runner.exceptions import SyntaxException
 
 
