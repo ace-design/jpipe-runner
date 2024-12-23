@@ -6,7 +6,8 @@ This module contains the definitions of Justification Diagram.
 """
 
 from enum import Enum
-from typing import Optional
+from pprint import pformat
+from typing import Any, Optional
 
 
 class ClassType(Enum):
@@ -25,20 +26,30 @@ class VariableType(Enum):
     SUPPORT = "@support"
 
 
+class LoadStmt:
+    def __init__(self,
+                 path: str,
+                 ):
+        self.path = path
+
+    def __repr__(self):
+        return f"<LoadStmt path={repr(self.path)}>"
+
+
 class ClassDef:
     def __init__(self,
                  class_type: ClassType,
                  name: str,
-                 implements: Optional[str] = None,
+                 pattern: Optional[str] = None,
                  ):
         # justification / pattern / composition
         self.class_type = class_type
         self.name = name
-        self.implements = implements
+        self.pattern = pattern
         self.body = None
 
     def __repr__(self):
-        return f"<ClassDef type={self.class_type} name={self.name} implements={self.implements} body={self.body}>"
+        return f"<ClassDef type={self.class_type} name={self.name} implements={self.pattern} body={self.body}>"
 
 
 class VariableDef:
@@ -54,7 +65,7 @@ class VariableDef:
         self.action = lambda: True
 
     def __repr__(self):
-        return f"<VariableDef type={self.var_type} name={self.name} desc={self.description}>"
+        return f"<VariableDef type={self.var_type} name={self.name} desc={repr(self.description)}>"
 
 
 class SupportDef:
@@ -70,19 +81,28 @@ class SupportDef:
 
 
 class JustificationDef:
-    def __init__(self):
-        # list of VariableDef
-        self.variables = []
-        # list of SupportDef
-        self.supports = []
+    def __init__(self,
+                 variables: Optional[list[VariableDef]] = None,
+                 supports: Optional[list[SupportDef]] = None,
+                 ):
+        if variables is None:
+            variables = []
+        if supports is None:
+            supports = []
+        self.variables = variables
+        self.supports = supports
 
     def __repr__(self):
-        return f"<JustificationDef vars={self.variables} supports={self.supports}>"
+        return f"<JustificationDef vars={pformat(self.variables)} supports={pformat(self.supports)}>"
 
 
 class CompositionDef:
-    def __init__(self):
-        self.compositions = []
+    def __init__(self,
+                 compositions: Optional[list[Any]] = None,
+                 ):
+        if compositions is None:
+            compositions = []
+        self.compositions = compositions
 
     def __repr__(self):
-        return f"<CompositionDef {self.compositions}>"
+        return f"<CompositionDef compositions={pformat(self.compositions)}>"

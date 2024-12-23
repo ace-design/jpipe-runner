@@ -1,0 +1,120 @@
+"""
+jpipe_runner.jpipe
+~~~~~~~~~~~~~~~~~~
+
+This module contains the core of jPipe Runner.
+"""
+
+from typing import Any, Iterable
+
+import lark
+from lark import Transformer, v_args
+
+from jpipe_runner import utils
+from jpipe_runner.definitions import (ClassType,
+                                      VariableType,
+                                      LoadStmt,
+                                      ClassDef,
+                                      VariableDef,
+                                      SupportDef,
+                                      JustificationDef,
+                                      CompositionDef)
+from jpipe_runner.exceptions import SyntaxException
+
+
+# noinspection PyMethodMayBeStatic
+class JPipeTransformer(Transformer):
+    def start(self, items):
+        return {"model": items}
+
+    def model(self, items):
+        return {
+            "load_statements": [item for item in items if isinstance(item, LoadStmt)],
+            "class_definitions": [item for item in items if isinstance(item, ClassDef)],
+        }
+
+    @v_args(inline=True)
+    def load_stmt(self, path: str):
+        return LoadStmt(path=path)
+
+    @v_args(inline=True)
+    def class_def(self,
+                  class_type: ClassType,
+                  name: str,
+                  *params):
+        cls = ClassDef(class_type=class_type,
+                       name=name)
+        if num := len(params) not in (1, 2):
+            raise SyntaxError(f"invalid number of parameters: {num}")
+
+        if isinstance(body := params[-1], JustificationDef | CompositionDef):
+            cls.body = body
+        else:
+            raise SyntaxError(f"invalid class body: {type(body)}")
+
+        match len(params):
+            case 2:
+                if class_type != ClassType.JUSTIFICATION:
+                    raise SyntaxException(
+                        f"Keyword implements is only supported for {ClassType.JUSTIFICATION}, but is used in {class_type}")
+                cls.pattern = params[0]
+
+        return cls
+
+    def justification_pattern(self,
+                              items: Iterable[VariableDef | SupportDef],
+                              ):
+        return JustificationDef(
+            variables=[i for i in items if isinstance(i, VariableDef)],
+            supports=[i for i in items if isinstance(i, SupportDef)],
+        )
+
+    @v_args(inline=True)
+    def variable(self,
+                 var_type: VariableType,
+                 name: str,
+                 description: str,
+                 ):
+        return VariableDef(var_type=var_type,
+                           name=name,
+                           description=description)
+
+    @v_args(inline=True)
+    def instruction(self, instr: str):
+        return instr
+
+    @v_args(inline=True)
+    def support(self,
+                left: str,
+                right: str,
+                ):
+        return SupportDef(left=left,
+                          right=right)
+
+    def composition(self, items: Iterable[Any]):
+        return CompositionDef(
+            compositions=[i for i in items],
+        )
+
+    # TODO: add support for composition class.
+    # def composition_variable(self, items):
+    #     return {"composition_variable": {"justification": items[0]}}
+    #
+    # def composition_instruction(self, items):
+    #     return {"composition_instruction": {"variable": items[0], "information": items[1]}}
+    #
+    # def composition_information(self, items):
+    #     return {"information": {"id1": items[0], "id2": items[1]}}
+
+    # LEXER tokens
+    def CLASS_TYPE(self, token: lark.Token) -> ClassType:
+        return ClassType(token.value)
+
+    def VARIABLE_TYPE(self, token: lark.Token) -> VariableType:
+        return VariableType(token.value)
+
+    def ID(self, token: lark.Token) -> str:
+        return str(token.value)
+
+    def STRING(self, token: lark.Token) -> str:
+        return utils.unquote_string(token.value)
