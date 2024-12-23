@@ -16,3 +16,7 @@ class SyntaxException(RunnerException):
 
 class UnsupportedException(RunnerException):
     """An unsupported error occurred."""
+
+
+class NotFoundException(RunnerException):
+    """A not found error occurred."""
