@@ -5,11 +5,9 @@ jpipe_runner.jpipe
 This module contains the core of jPipe Runner.
 """
 
-from typing import Optional
-
 from jpipe_runner.enums import ClassType
 from jpipe_runner.exceptions import InvalidJustificationException
-from jpipe_runner.models import ModelDef, JustificationDef
+from jpipe_runner.models import JustificationDef
 from jpipe_runner.parser import load_jd_file
 
 
@@ -20,19 +18,10 @@ class Justification:
 class JPipe:
 
     def __init__(self,
-                 jd_file: Optional[str] = None,
+                 jd_file: str,
                  ):
-        self._model: ModelDef = ModelDef()
-
-        if jd_file:
-            self.load_jd_file(filename=jd_file)
-
+        self._model = load_jd_file(filename=jd_file)
         self._init_model()
-
-    # load justification file to class model
-    def load_jd_file(self, filename: str) -> None:
-        model = load_jd_file(filename)
-        self._model.update(model)
 
     def _init_model(self) -> None:
         for cls in self._model.class_defs.values():
