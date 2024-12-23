@@ -14,9 +14,5 @@ class SyntaxException(RunnerException):
     """A syntax error occurred."""
 
 
-class UnsupportedException(RunnerException):
-    """An unsupported error occurred."""
-
-
 class InvalidJustificationException(RunnerException):
     """An invalid justification error occurred."""
