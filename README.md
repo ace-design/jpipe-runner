@@ -2,6 +2,12 @@
 
 A Justification Runner designed for jPipe.
 
+## Features
+
+- Fully compatible with existing jPipe syntax/grammar.
+- A keyword-driven operational justification diagram.
+- Multiple runtime support: Python and JavaScript.
+
 ## Motivation
 
 In the current Justification Diagram of [jPipe](https://github.com/ace-design/jpipe), the primary focus is on describing _what justification_ to perform and the _reasoning relationship_ between justification and conclusion. However, it does not elaborate on _how_ to actually execute these justifications in code, resulting in .jd files that are mainly a visual representation of reasoning — **lacking the capacity to run the justification process** in practice.
