@@ -18,22 +18,22 @@ class JPipe:
                  model: ModelDef,
                  ):
         self.model = deepcopy(model)
-        self.init_model()
+        self._init_model()
 
-    def init_model(self) -> None:
+    def _init_model(self) -> None:
         if len(self.model.load_stmts) > 0:
             raise UnsupportedException("load statement is not supported by jpipe runner")
 
         for cls in self.model.class_defs:
             match cls.class_type:
                 case ClassType.JUSTIFICATION:
-                    # expand pattern to justification.
+                    # expand justification with pattern.
                     if cls.pattern is not None:
-                        jd: JustificationDef = self.find_pattern(cls.pattern)
+                        jd: JustificationDef = self._find_pattern(cls.pattern)
                         cls.body.supports.update(i for i in jd.supports)
                         cls.body.variables.update(i for i in jd.variables
                                                   if i.var_type != VariableType.SUPPORT)
-                    self.validate_justification(cls.body)
+                    self._validate_justification(cls.body)
                 case ClassType.PATTERN:
                     # ignore pattern class
                     pass
@@ -41,12 +41,12 @@ class JPipe:
                     # ignore composition class
                     pass
 
-    def find_pattern(self, pattern: str) -> JustificationDef:
+    def _find_pattern(self, pattern: str) -> JustificationDef:
         for cls in self.model.class_defs:
             if cls.class_type == ClassType.PATTERN and cls.name == pattern:
                 assert isinstance(cls.body, JustificationDef)
                 return cls.body
         raise InvalidJustificationException(f"pattern {pattern} not found")
 
-    def validate_justification(self, jd: JustificationDef) -> None:
+    def _validate_justification(self, jd: JustificationDef) -> None:
         return
