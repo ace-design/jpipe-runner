@@ -25,7 +25,7 @@ class VariableDef:
             self.action = lambda: True
 
 
-@dataclass(order=True, unsafe_hash=True)
+@dataclass(order=True, frozen=True)
 class SupportDef:
     left: str
     right: str
@@ -33,23 +33,23 @@ class SupportDef:
 
 @dataclass(order=True)
 class JustificationDef:
-    variables: Optional[list[VariableDef]] = None
-    supports: Optional[list[SupportDef]] = None
+    variables: Optional[set[VariableDef]] = None
+    supports: Optional[set[SupportDef]] = None
 
     def __post_init__(self):
         if self.variables is None:
-            self.variables = []
+            self.variables = set()
         if self.supports is None:
-            self.supports = []
+            self.supports = set()
 
 
 @dataclass(order=True)
 class CompositionDef:
-    compositions: Optional[list[Any]] = None
+    compositions: Optional[set[Any]] = None
 
     def __post_init__(self):
         if self.compositions is None:
-            self.compositions = []
+            self.compositions = set()
 
 
 @dataclass(order=True)
