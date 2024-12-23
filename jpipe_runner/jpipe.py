@@ -13,6 +13,7 @@ from lark import Transformer, v_args
 from jpipe_runner import utils
 from jpipe_runner.definitions import (ClassType,
                                       VariableType,
+                                      ModelDef,
                                       LoadStmt,
                                       ClassDef,
                                       VariableDef,
@@ -24,14 +25,15 @@ from jpipe_runner.exceptions import SyntaxException
 
 # noinspection PyMethodMayBeStatic
 class JPipeTransformer(Transformer):
-    def start(self, items):
-        return {"model": items}
+    @v_args(inline=True)
+    def start(self, model: ModelDef):
+        return model
 
-    def model(self, items):
-        return {
-            "load_statements": [item for item in items if isinstance(item, LoadStmt)],
-            "class_definitions": [item for item in items if isinstance(item, ClassDef)],
-        }
+    def model(self, items: Iterable[LoadStmt | ClassDef]):
+        return ModelDef(
+            load_stmts=[item for item in items if isinstance(item, LoadStmt)],
+            class_defs=[item for item in items if isinstance(item, ClassDef)],
+        )
 
     @v_args(inline=True)
     def load_stmt(self, path: str):
@@ -80,8 +82,8 @@ class JPipeTransformer(Transformer):
                            description=description)
 
     @v_args(inline=True)
-    def instruction(self, instr: str):
-        return instr
+    def instruction(self, desc: str):
+        return desc
 
     @v_args(inline=True)
     def support(self,
