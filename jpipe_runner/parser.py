@@ -11,7 +11,6 @@ from lark import Lark, ParseTree
 from lark.exceptions import (UnexpectedCharacters,
                              UnexpectedToken)
 
-from jpipe_runner.jpipe import JPipe
 from jpipe_runner.transformer import *
 
 
@@ -31,34 +30,25 @@ jpipe_parser = Lark(grammar=JPIPE_GRAMMAR,
                     parser='lalr')
 
 
-def parse_justification_diagram(source: str) -> ParseTree:
+def parse_jd(source: str) -> ModelDef:
     try:
-        tree = jpipe_parser.parse(text=source)
-        return tree
+        tree: ParseTree = jpipe_parser.parse(text=source)
+        model: ModelDef = JPipeTransformer().transform(tree)
+        return model
     except (UnexpectedCharacters, UnexpectedToken) as e:
         raise SyntaxException(
             'parse error: invalid justification diagram source code') from e
 
 
-def test():
-    for ff in (
-            # 'examples/01_slides.jd',
-            # "examples/02_quality_full.jd",
-            # "examples/03_quality_compo.jd",
-            "examples/04_pattern.jd",
-    ):
-        with open(
-                ff
-        ) as f:
-            text = f.read()
-            tree = parse_justification_diagram(text)
+def parse_jd_file(filename: str) -> ModelDef:
+    with open(filename, encoding='utf-8') as f:
+        content = f.read()
+    return parse_jd(source=content)
 
-        model = JPipeTransformer().transform(tree)
-        jpipe = JPipe(model)
 
-        from pprint import pprint
-        pprint(jpipe.model)
+def _test():
+    pass
 
 
 if __name__ == "__main__":
-    test()
+    _test()

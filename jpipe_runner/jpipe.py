@@ -10,6 +10,7 @@ from copy import deepcopy
 from jpipe_runner.enums import ClassType, VariableType
 from jpipe_runner.exceptions import UnsupportedException, InvalidJustificationException
 from jpipe_runner.models import ModelDef, JustificationDef
+from jpipe_runner.parser import parse_jd_file
 
 
 class JPipe:
@@ -17,14 +18,14 @@ class JPipe:
     def __init__(self,
                  model: ModelDef,
                  ):
-        self.model = deepcopy(model)
+        self._model = deepcopy(model)
         self._init_model()
 
     def _init_model(self) -> None:
-        if len(self.model.load_stmts) > 0:
+        if len(self._model.load_stmts) > 0:
             raise UnsupportedException("load statement is not supported by jpipe runner")
 
-        for cls in self.model.class_defs:
+        for cls in self._model.class_defs:
             match cls.class_type:
                 case ClassType.JUSTIFICATION:
                     # expand justification with pattern.
@@ -42,7 +43,7 @@ class JPipe:
                     pass
 
     def _find_pattern(self, pattern: str) -> JustificationDef:
-        for cls in self.model.class_defs:
+        for cls in self._model.class_defs:
             if cls.class_type == ClassType.PATTERN and cls.name == pattern:
                 assert isinstance(cls.body, JustificationDef)
                 return cls.body
@@ -50,3 +51,7 @@ class JPipe:
 
     def _validate_justification(self, jd: JustificationDef) -> None:
         return
+
+    def load_jd(self, jd_file: str) -> None:
+        parse_jd_file(filename=jd_file)
+        pass
