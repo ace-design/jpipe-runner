@@ -72,6 +72,11 @@ class ModelDef:
 
     def __post_init__(self):
         if self.load_stmts is None:
-            self.compositions = set()
+            self.load_stmts = set()
         if self.class_defs is None:
             self.class_defs = dict()
+
+    def update(self, model) -> None:
+        assert isinstance(model, ModelDef)
+        self.load_stmts.update(model.load_stmts)
+        self.class_defs.update(model.class_defs)
