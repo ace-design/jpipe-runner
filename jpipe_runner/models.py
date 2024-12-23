@@ -52,7 +52,7 @@ class CompositionDef:
             self.compositions = dict()
 
 
-@dataclass(order=True)
+@dataclass(order=True, frozen=True)
 class LoadStmt:
     path: str
 
@@ -67,5 +67,5 @@ class ClassDef:
 
 @dataclass(order=True)
 class ModelDef:
-    load_stmts: list[LoadStmt]
-    class_defs: list[ClassDef]
+    load_stmts: set[LoadStmt]
+    class_defs: dict[str, ClassDef]

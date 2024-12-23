@@ -31,8 +31,8 @@ class JPipeTransformer(Transformer):
 
     def model(self, items: Iterable[LoadStmt | ClassDef]) -> ModelDef:
         return ModelDef(
-            load_stmts=[item for item in items if isinstance(item, LoadStmt)],
-            class_defs=[item for item in items if isinstance(item, ClassDef)],
+            load_stmts=set(item for item in items if isinstance(item, LoadStmt)),
+            class_defs=dict((item.name, item) for item in items if isinstance(item, ClassDef)),
         )
 
     @v_args(inline=True)
