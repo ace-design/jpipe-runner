@@ -11,6 +11,9 @@ import lark
 from lark import Transformer, v_args
 
 from jpipe_runner import utils
+from jpipe_runner.enums import (ClassType,
+                                VariableType)
+from jpipe_runner.exceptions import SyntaxException
 from jpipe_runner.models import (ModelDef,
                                  LoadStmt,
                                  ClassDef,
@@ -18,8 +21,6 @@ from jpipe_runner.models import (ModelDef,
                                  SupportDef,
                                  JustificationDef,
                                  CompositionDef)
-from jpipe_runner.enums import ClassType, VariableType
-from jpipe_runner.exceptions import SyntaxException
 
 
 # noinspection PyMethodMayBeStatic

@@ -16,8 +16,13 @@ class VariableDef:
     var_type: VariableType
     name: str
     description: str
+
     # TODO: mapped action function
-    action: Optional[Callable] = lambda: True
+    action: Optional[Callable] = None
+
+    def __post_init__(self):
+        if self.action is None:
+            self.action = lambda: True
 
 
 @dataclass(order=True, unsafe_hash=True)
@@ -28,13 +33,23 @@ class SupportDef:
 
 @dataclass(order=True)
 class JustificationDef:
-    variables: Optional[list[VariableDef]]
-    supports: Optional[list[SupportDef]]
+    variables: Optional[list[VariableDef]] = None
+    supports: Optional[list[SupportDef]] = None
+
+    def __post_init__(self):
+        if self.variables is None:
+            self.variables = []
+        if self.supports is None:
+            self.supports = []
 
 
 @dataclass(order=True)
 class CompositionDef:
-    compositions: Optional[list[Any]]
+    compositions: Optional[list[Any]] = None
+
+    def __post_init__(self):
+        if self.compositions is None:
+            self.compositions = []
 
 
 @dataclass(order=True)
