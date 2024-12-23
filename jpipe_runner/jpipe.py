@@ -8,7 +8,7 @@ This module contains the core of jPipe Runner.
 from copy import deepcopy
 
 from jpipe_runner.enums import ClassType, VariableType
-from jpipe_runner.exceptions import UnsupportedException, NotFoundException
+from jpipe_runner.exceptions import UnsupportedException, InvalidJustificationException
 from jpipe_runner.models import ModelDef, JustificationDef
 
 
@@ -33,6 +33,7 @@ class JPipe:
                         cls.body.supports.update(i for i in jd.supports)
                         cls.body.variables.update(i for i in jd.variables
                                                   if i.var_type != VariableType.SUPPORT)
+                    self.validate_justification(cls.body)
                 case ClassType.PATTERN:
                     # ignore pattern class
                     pass
@@ -45,4 +46,7 @@ class JPipe:
             if cls.class_type == ClassType.PATTERN and cls.name == pattern:
                 assert isinstance(cls.body, JustificationDef)
                 return cls.body
-        raise NotFoundException(f"pattern {pattern} not found")
+        raise InvalidJustificationException(f"pattern {pattern} not found")
+
+    def validate_justification(self, jd: JustificationDef) -> None:
+        return

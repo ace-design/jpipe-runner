@@ -18,5 +18,5 @@ class UnsupportedException(RunnerException):
     """An unsupported error occurred."""
 
 
-class NotFoundException(RunnerException):
-    """A not found error occurred."""
+class InvalidJustificationException(RunnerException):
+    """An invalid justification error occurred."""
