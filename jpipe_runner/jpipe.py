@@ -26,24 +26,24 @@ from jpipe_runner.models import (ModelDef,
 # noinspection PyMethodMayBeStatic
 class JPipeTransformer(Transformer):
     @v_args(inline=True)
-    def start(self, model: ModelDef):
+    def start(self, model: ModelDef) -> ModelDef:
         return model
 
-    def model(self, items: Iterable[LoadStmt | ClassDef]):
+    def model(self, items: Iterable[LoadStmt | ClassDef]) -> ModelDef:
         return ModelDef(
             load_stmts=[item for item in items if isinstance(item, LoadStmt)],
             class_defs=[item for item in items if isinstance(item, ClassDef)],
         )
 
     @v_args(inline=True)
-    def load_stmt(self, path: str):
+    def load_stmt(self, path: str) -> LoadStmt:
         return LoadStmt(path=path)
 
     @v_args(inline=True)
     def class_def(self,
                   class_type: ClassType,
                   name: str,
-                  *params):
+                  *params) -> ClassDef:
         cls = ClassDef(class_type=class_type,
                        name=name)
         if num := len(params) not in (1, 2):
@@ -65,7 +65,7 @@ class JPipeTransformer(Transformer):
 
     def justification_pattern(self,
                               items: Iterable[VariableDef | SupportDef],
-                              ):
+                              ) -> JustificationDef:
         return JustificationDef(
             variables=[i for i in items if isinstance(i, VariableDef)],
             supports=[i for i in items if isinstance(i, SupportDef)],
@@ -76,24 +76,24 @@ class JPipeTransformer(Transformer):
                  var_type: VariableType,
                  name: str,
                  description: str,
-                 ):
+                 ) -> VariableDef:
         return VariableDef(var_type=var_type,
                            name=name,
                            description=description)
 
     @v_args(inline=True)
-    def instruction(self, desc: str):
+    def instruction(self, desc: str) -> str:
         return desc
 
     @v_args(inline=True)
     def support(self,
                 left: str,
                 right: str,
-                ):
+                ) -> SupportDef:
         return SupportDef(left=left,
                           right=right)
 
-    def composition(self, items: Iterable[Any]):
+    def composition(self, items: Iterable[Any]) -> CompositionDef:
         return CompositionDef(
             compositions=[i for i in items],
         )
