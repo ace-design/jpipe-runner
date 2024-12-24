@@ -35,9 +35,12 @@ class Justification(nx.DiGraph):
                                    style="filled"),
     }
 
+    def justify_orders(self) -> None:
+        pass
+
     # noinspection PyCallingNonCallable
     def validate(self) -> None:
-        conclusion_nodes = [n for n, d in self.nodes(data=True) if d['var_type'] == VariableType.CONCLUSION]
+        conclusion_nodes = [n for n, d in self.nodes(data=True) if d["var_type"] == VariableType.CONCLUSION]
         if len(conclusion_nodes) != 1:
             raise InvalidJustificationException(
                 f"justification '{self.name}' must have only one conclusion, but got {len(conclusion_nodes)}")
@@ -49,7 +52,7 @@ class Justification(nx.DiGraph):
         conclusion = conclusion_nodes[0]
 
         for n, d in self.nodes(data=True):
-            match d['var_type']:
+            match d["var_type"]:
                 case VariableType.EVIDENCE:
                     if self.in_degree(n) != 0:  # check in-degree
                         raise InvalidJustificationException(
@@ -184,3 +187,6 @@ class JPipeEngine:
 
         jd.validate()
         return jd
+
+    def justify(self) -> bool:
+        pass
