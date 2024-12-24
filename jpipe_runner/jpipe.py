@@ -5,14 +5,18 @@ jpipe_runner.jpipe
 This module contains the core of jPipe Runner.
 """
 
+from collections import deque
 from copy import deepcopy
-from typing import Optional
+from typing import (Optional,
+                    Callable,
+                    Iterable)
 
 import networkx as nx
 from networkx.drawing.nx_agraph import to_agraph
 
 from jpipe_runner.enums import ClassType, VariableType
-from jpipe_runner.exceptions import InvalidJustificationException
+from jpipe_runner.exceptions import (InvalidJustificationException,
+                                     JustificationTraverseException)
 from jpipe_runner.models import JustificationDef, ClassDef
 from jpipe_runner.parser import load_jd_file
 
@@ -35,8 +39,59 @@ class Justification(nx.DiGraph):
                                    style="filled"),
     }
 
-    def justify_orders(self) -> None:
-        pass
+    @property
+    def justify_order(self) -> Iterable[str]:
+        order: list[str] = []
+
+        def callback(n, _):
+            order.append(n)
+            return True
+
+        self.layered_traverse(callback)
+        return order
+
+    def layered_traverse(self,
+                         callback: Optional[Callable[[str, dict], bool]] = None,
+                         ) -> None:
+
+        if callback is None:
+            callback = lambda n, d: True
+
+        # noinspection PyCallingNonCallable
+        # start with all evidence nodes.
+        start_nodes = (n for n in self.nodes(data=False)
+                       if self.in_degree(n) == 0)
+
+        visited = set()
+        queue = deque(start_nodes)
+
+        while queue:
+            node = queue.popleft()
+
+            # node already visited.
+            if node in visited:
+                continue
+
+            # run callback function.
+            if not callback(node, self.nodes[node]):
+                raise JustificationTraverseException(
+                    f"callback returns false when traversing to '{node}'")
+
+            # save visited node.
+            visited.add(node)
+
+            # check successor nodes.
+            for child in self.successors(node):
+                all_parents_visited = True
+                for parent in self.predecessors(child):
+                    if parent not in visited:
+                        all_parents_visited = False
+                        break
+
+                if all_parents_visited and child not in visited:
+                    queue.append(child)  # ready to enqueue.
+
+        assert len(visited) == len(self.nodes)
 
     # noinspection PyCallingNonCallable
     def validate(self) -> None:
