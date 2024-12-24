@@ -166,11 +166,11 @@ class JPipeEngine:
                         var_type=item.var_type,
                         )
 
-        def check_vars(*v):
-            for i in v:
-                if i not in variables:
+        def check_vars(*args):
+            for v in args:
+                if v not in variables:
                     raise InvalidJustificationException(
-                        f"variable ID '{i}' not found")
+                        f"variable ID '{v}' not found")
 
         for support in supports:
             check_vars(support.left, support.right)

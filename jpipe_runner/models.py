@@ -6,23 +6,16 @@ This module contains the model definitions of Justification Diagram.
 """
 
 from dataclasses import dataclass
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 from jpipe_runner.enums import ClassType, VariableType
 
 
-@dataclass(order=True)
+@dataclass(order=True, frozen=True)
 class VariableDef:
     var_type: VariableType
     name: str
     description: str
-
-    # TODO: mapped action function
-    action: Optional[Callable] = None
-
-    def __post_init__(self):
-        if self.action is None:
-            self.action = lambda: True
 
 
 @dataclass(order=True, frozen=True)
