@@ -36,9 +36,48 @@ class Justification(nx.DiGraph):
     }
 
     def validate(self) -> None:
+        conclusion_nodes = [n for n, d in self.nodes(data=True) if d['var_type'] == VariableType.CONCLUSION]
+        if len(conclusion_nodes) != 1:
+            raise InvalidJustificationException(
+                f"justification '{self.name}' must have only one conclusion, but got {len(conclusion_nodes)}")
+
         if not nx.is_directed_acyclic_graph(self):
             raise InvalidJustificationException(
-                "justification must be a DAG (directed acyclic graph)")
+                f"justification '{self.name}' must be a DAG (directed acyclic graph)")
+
+        conclusion = conclusion_nodes[0]
+
+        for n, d in self.nodes(data=True):
+            match d['var_type']:
+                case VariableType.EVIDENCE:
+                    # noinspection PyCallingNonCallable
+                    if self.in_degree(n) != 0:  # check in-degree
+                        raise InvalidJustificationException(
+                            f"evidence '{n}' is not allowed to be supported by others")
+                    if not nx.has_path(self, n, conclusion):
+                        raise InvalidJustificationException(
+                            f"evidence '{n}' does not reach the conclusion '{conclusion}'")
+                case VariableType.STRATEGY:
+                    supports = tuple(self.successors(n))
+                    if len(supports) == 0:
+                        raise InvalidJustificationException(
+                            f"strategy '{n}' does not support any node, must have 1 out-edge")
+                    if len(supports) > 1:
+                        raise InvalidJustificationException(
+                            f"strategy '{n}' supports multiple nodes, but only 1 out-edge allowed")
+                    if (out_var_type := self.nodes[supports[0]]['var_type']) not in \
+                            (VariableType.SUB_CONCLUSION, VariableType.CONCLUSION):
+                        raise InvalidJustificationException(
+                            f"strategy '{n}' can only support sub-conclusion or conclusion, found '{out_var_type}'.")
+                case VariableType.SUB_CONCLUSION:
+                    if not nx.has_path(self, n, conclusion):
+                        raise InvalidJustificationException(
+                            f"sub-conclusion '{n}' does not reach the conclusion '{conclusion}'")
+                case VariableType.CONCLUSION:
+                    pass
+                case VariableType.SUPPORT:
+                    raise InvalidJustificationException(
+                        f"support '{n}' should not be included in a justification class")
 
     def export_to_image(self,
                         path: Optional[str] = None,
