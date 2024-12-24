@@ -35,6 +35,7 @@ class Justification(nx.DiGraph):
                                    style="filled"),
     }
 
+    # noinspection PyCallingNonCallable
     def validate(self) -> None:
         conclusion_nodes = [n for n, d in self.nodes(data=True) if d['var_type'] == VariableType.CONCLUSION]
         if len(conclusion_nodes) != 1:
@@ -50,7 +51,6 @@ class Justification(nx.DiGraph):
         for n, d in self.nodes(data=True):
             match d['var_type']:
                 case VariableType.EVIDENCE:
-                    # noinspection PyCallingNonCallable
                     if self.in_degree(n) != 0:  # check in-degree
                         raise InvalidJustificationException(
                             f"evidence '{n}' is not allowed to be supported by others")
@@ -62,6 +62,9 @@ class Justification(nx.DiGraph):
                             raise InvalidJustificationException(
                                 f"evidence '{n}' can only support strategy, found '{out_var_type}'")
                 case VariableType.STRATEGY:
+                    if self.in_degree(n) == 0:
+                        raise InvalidJustificationException(
+                            f"strategy '{n}' must be supported by others")
                     supports = tuple(self.successors(n))
                     if len(supports) == 0:
                         raise InvalidJustificationException(
@@ -74,6 +77,9 @@ class Justification(nx.DiGraph):
                         raise InvalidJustificationException(
                             f"strategy '{n}' can only support sub-conclusion or conclusion, found '{out_var_type}'.")
                 case VariableType.SUB_CONCLUSION:
+                    if self.in_degree(n) == 0:
+                        raise InvalidJustificationException(
+                            f"sub-conclusion '{n}' must be supported by others")
                     if not nx.has_path(self, n, conclusion):
                         raise InvalidJustificationException(
                             f"sub-conclusion '{n}' does not reach the conclusion '{conclusion}'")
