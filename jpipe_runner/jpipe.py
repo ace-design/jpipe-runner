@@ -45,7 +45,7 @@ class Justification(nx.DiGraph):
         agraph = to_agraph(self)
 
         agraph.graph_attr.update(
-            size="8，8",
+            size="5",
             rankdir="BT",  # Bottom-to-Top
             dpi="500",
             label=self.name,
@@ -57,9 +57,9 @@ class Justification(nx.DiGraph):
             arrowhead="normal",
         )
 
-        for node in self.nodes(data=True):
-            attr = self.node_attr_map[node[1]["var_type"]]
-            agraph_node = agraph.get_node(node[0])
+        for name, attrs in self.nodes(data=True):
+            attr = self.node_attr_map[attrs["var_type"]]
+            agraph_node = agraph.get_node(name)
             agraph_node.attr.update({
                 (k, v)
                 for k, v in attr.items()
