@@ -57,6 +57,10 @@ class Justification(nx.DiGraph):
                     if not nx.has_path(self, n, conclusion):
                         raise InvalidJustificationException(
                             f"evidence '{n}' does not reach the conclusion '{conclusion}'")
+                    for out in self.successors(n):
+                        if (out_var_type := self.nodes[out]['var_type']) != VariableType.STRATEGY:
+                            raise InvalidJustificationException(
+                                f"evidence '{n}' can only support strategy, found '{out_var_type}'")
                 case VariableType.STRATEGY:
                     supports = tuple(self.successors(n))
                     if len(supports) == 0:
@@ -73,11 +77,15 @@ class Justification(nx.DiGraph):
                     if not nx.has_path(self, n, conclusion):
                         raise InvalidJustificationException(
                             f"sub-conclusion '{n}' does not reach the conclusion '{conclusion}'")
+                    for out in self.successors(n):
+                        if (out_var_type := self.nodes[out]['var_type']) != VariableType.STRATEGY:
+                            raise InvalidJustificationException(
+                                f"sub-conclusion '{n}' can only support strategy, found '{out_var_type}'")
                 case VariableType.CONCLUSION:
                     pass
                 case VariableType.SUPPORT:
                     raise InvalidJustificationException(
-                        f"support '{n}' should not be included in a justification class")
+                        f"abstract support '{n}' should not be included in a justification class")
 
     def export_to_image(self,
                         path: Optional[str] = None,
@@ -158,7 +166,14 @@ class JPipeEngine:
                         var_type=item.var_type,
                         )
 
+        def check_vars(*v):
+            for i in v:
+                if i not in variables:
+                    raise InvalidJustificationException(
+                        f"variable ID '{i}' not found")
+
         for support in supports:
+            check_vars(support.left, support.right)
             jd.add_edge(support.left, support.right)
 
         jd.validate()
