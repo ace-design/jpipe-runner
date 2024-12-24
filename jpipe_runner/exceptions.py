@@ -10,9 +10,17 @@ class RunnerException(Exception):
     """There was an ambiguous exception that occurred while running the runner."""
 
 
-class SyntaxException(RunnerException):
+class SyntaxException(SyntaxError, RunnerException):
     """A syntax error occurred."""
 
 
 class InvalidJustificationException(RunnerException):
     """An invalid justification error occurred."""
+
+
+class JustificationTraverseException(RunnerException):
+    """A justification layered traverse error occurred."""
+
+
+class RunnerRuntimeException(RuntimeError, RunnerException):
+    """A runtime error of jpipe runner occurred."""
