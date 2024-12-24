@@ -36,7 +36,9 @@ class Justification(nx.DiGraph):
     }
 
     def validate(self) -> None:
-        pass
+        if not nx.is_directed_acyclic_graph(self):
+            raise InvalidJustificationException(
+                "justification must be a DAG (directed acyclic graph)")
 
     def export_to_image(self,
                         path: Optional[str] = None,
@@ -57,9 +59,9 @@ class Justification(nx.DiGraph):
             arrowhead="normal",
         )
 
-        for name, attrs in self.nodes(data=True):
-            attr = self.node_attr_map[attrs["var_type"]]
-            agraph_node = agraph.get_node(name)
+        for n, d in self.nodes(data=True):
+            attr = self.node_attr_map[d["var_type"]]
+            agraph_node = agraph.get_node(n)
             agraph_node.attr.update({
                 (k, v)
                 for k, v in attr.items()
@@ -69,7 +71,7 @@ class Justification(nx.DiGraph):
         return agraph.draw(path=path, format=format, prog="dot")
 
 
-class JPipe:
+class JPipeEngine:
 
     def __init__(self,
                  jd_file: str,
