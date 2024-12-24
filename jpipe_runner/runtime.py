@@ -6,7 +6,7 @@ This module contains the runtimes that can be used by jPipe Runner.
 """
 
 from ast import literal_eval
-from typing import Any
+from typing import Any, Iterable, Optional, Tuple
 
 from jpipe_runner.exceptions import RunnerRuntimeException
 
@@ -14,11 +14,21 @@ from jpipe_runner.exceptions import RunnerRuntimeException
 class PythonRuntime:
     """The default lightweight built-in Python runtime."""
 
-    def __init__(self):
+    def __init__(self,
+                 libraries: Optional[Iterable[str]] = None,
+                 variables: Optional[Iterable[Tuple[str, str]]] = None,
+                 ):
         self._sandbox_globals = {
             "__builtins__": __builtins__,
         }
         self._sandbox_locals = {}
+
+        if libraries:
+            for lib in libraries:
+                self.run_file(lib)
+        if variables:
+            for k, v in variables:
+                self.set_variable(k, v)
 
     def run_code(self, code: str) -> None:
         try:
@@ -33,11 +43,11 @@ class PythonRuntime:
             content = f.read()
         self.run_code(code=content)
 
-    def import_module(self, name) -> None:
+    def import_module(self, name: str) -> None:
         module = __import__(name)
         self.set_variable(name, module)
 
-    def call_function(self, name, *args, **kwargs) -> Any:
+    def call_function(self, name: str, *args, **kwargs) -> Any:
         fn = self.get_variable(name)
         return fn(*args, **kwargs)
 
