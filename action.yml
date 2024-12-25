@@ -24,13 +24,19 @@ runs:
   using: "composite"
   steps:
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: "3.13"
 
     - name: Install dependencies
       shell: bash
+      env:
+        DEBIAN_FRONTEND: "noninteractive"
       run: |
+        apt-get install \
+          --no-install-recommends \
+          --no-install-suggests -y \
+          graphviz graphviz-dev
         pip install -r requirements.txt
 
     - name: Run jpipe-runner
