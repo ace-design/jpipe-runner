@@ -146,13 +146,13 @@ def main():
                             variables=[i.split(':', maxsplit=1)
                                        for i in args.variable])
 
-    m, n, _, _ = pretty_display((d, jpipe.justify(d,
+    m, n, _, s = pretty_display((d, jpipe.justify(d,
                                                   dry_run=args.dry_run,
                                                   runtime=runtime.copy()))
                                 for d in diagrams)
 
-    # exit 0 only when all justifications passed
-    sys.exit(m - n)
+    # exit 0 only when all justifications passed/skipped
+    sys.exit(m - n - s)
 
 
 if __name__ == '__main__':
