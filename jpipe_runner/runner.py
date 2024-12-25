@@ -24,10 +24,6 @@ JPIPE_RUNNER_ASCII = r"""
 """
 
 
-def run():
-    pass
-
-
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(prog="jpipe_runner",
                                      description=("McMaster University - McSCert (c) 2023-..."
@@ -39,12 +35,12 @@ def parse_args(argv=None):
                         help="Specify a Python library to load")
     parser.add_argument("--diagram", "-d", metavar="PATTERN", default="*",
                         help="Specify diagram pattern or wildcard")
-    parser.add_argument("--output", "-o", metavar="FILE",
-                        help="Output file for generated diagram or results")
+    # parser.add_argument("--output", "-o", metavar="FILE",
+    #                     help="Output file for generated diagram image")
     parser.add_argument("--dry-run", action="store_true",
-                        help="Perform a dry run without actually executing validations")
-    parser.add_argument("--verbose", "-V", action="store_true",
-                        help="Enable verbose (debug) output")
+                        help="Perform a dry run without actually executing justifications")
+    # parser.add_argument("--verbose", "-V", action="store_true",
+    #                     help="Enable verbose (debug) output")
     parser.add_argument("jd_file",
                         help="Path to the justification .jd file")
 
