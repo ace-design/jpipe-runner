@@ -9,7 +9,8 @@ from collections import deque
 from copy import deepcopy
 from typing import (Optional,
                     Callable,
-                    Iterable)
+                    Iterable,
+                    Iterator)
 
 import networkx as nx
 from networkx.drawing.nx_agraph import to_agraph
@@ -18,7 +19,8 @@ from jpipe_runner.enums import (ClassType,
                                 VariableType,
                                 StatusType)
 from jpipe_runner.exceptions import (InvalidJustificationException,
-                                     JustificationTraverseException)
+                                     JustificationTraverseException,
+                                     FunctionException)
 from jpipe_runner.models import JustificationDef, ClassDef
 from jpipe_runner.parser import load_jd_file
 from jpipe_runner.runtime import PythonRuntime
@@ -258,7 +260,7 @@ class JPipeEngine:
                 /,
                 dry_run: bool = False,
                 runtime: PythonRuntime = None,
-                ):
+                ) -> Iterator[dict]:
         jd = self.justifications[diagram]
 
         status = StatusType.PASS
@@ -273,18 +275,18 @@ class JPipeEngine:
 
             match attr['var_type']:
                 case VariableType.EVIDENCE | VariableType.STRATEGY:
-                    message = None
+                    exception = None
                     fn_name = sanitize_string(attr['label'])
                     try:
-                        res = runtime.call_function(fn_name)
-                        status = StatusType.PASS if res \
-                            else StatusType.FAIL
+                        if not (res := runtime.call_function(fn_name)):
+                            raise FunctionException(
+                                f"function '{fn_name}' returns non-true result: {res}")
                     except Exception as e:
-                        message = str(e)
+                        exception = f'{type(e).__name__}: {e}'
                         status = StatusType.FAIL
                     yield dict(name=node,
                                status=status,
-                               message=message,
+                               exception=exception,
                                **attr)
                 case VariableType.SUB_CONCLUSION | VariableType.CONCLUSION:
                     yield dict(name=node,
