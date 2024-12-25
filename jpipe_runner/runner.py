@@ -148,7 +148,8 @@ def main():
                                                   dry_run=args.dry_run,
                                                   runtime=runtime.copy()))
                                 for d in diagrams)
-    # exit 0 when all justifications passed
+
+    # exit 0 only when all justifications passed
     sys.exit(m - n)
 
 
