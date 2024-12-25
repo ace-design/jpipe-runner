@@ -9,7 +9,7 @@ from ast import literal_eval
 from copy import deepcopy
 from typing import Any, Iterable, Optional, Tuple
 
-from jpipe_runner.exceptions import RunnerRuntimeException
+from jpipe_runner.exceptions import RuntimeException
 
 
 class PythonRuntime:
@@ -40,7 +40,7 @@ class PythonRuntime:
                  self._sandbox_globals,
                  self._sandbox_locals)
         except Exception as e:
-            raise RunnerRuntimeException(e)
+            raise RuntimeException(e)
 
     def run_file(self, filename: str) -> None:
         with open(filename, encoding='utf-8') as f:
@@ -64,7 +64,7 @@ class PythonRuntime:
             return self._sandbox_locals[name]
         elif name in self._sandbox_globals:
             return self._sandbox_globals[name]
-        raise RunnerRuntimeException(
+        raise RuntimeException(
             f"'{name}' is not defined in the runtime")
 
     def set_variable(self, name: str, value: Any) -> None:

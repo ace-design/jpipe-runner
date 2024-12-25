@@ -22,5 +22,9 @@ class JustificationTraverseException(RunnerException):
     """A justification layered traverse error occurred."""
 
 
-class RunnerRuntimeException(RuntimeError, RunnerException):
+class RuntimeException(RuntimeError, RunnerException):
     """A runtime error of jpipe runner occurred."""
+
+
+class FunctionException(RunnerException):
+    """A justification function error occurred."""
