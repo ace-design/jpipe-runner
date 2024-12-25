@@ -1,0 +1,23 @@
+name: Test jpipe-runner
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-jpipe:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use jpipe-runner
+        uses: ./
+        with:
+          jd_file: "examples/01_slides.jd"
+          variable: "key:value"
+          library: ""
+          diagram: "*"
+          dry_run: "true"

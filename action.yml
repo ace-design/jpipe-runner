@@ -1,28 +1,44 @@
 name: "jPipe Runner"
-description: "GitHub Action to run justification diagram of jpipe"
+description: "GitHub Action to run justification diagrams of jpipe"
 author: "Jason Lyu"
 
 inputs:
-  example_input:
-    description: "An example input parameter"
+  jd_file:
+    description: "Path to the justification .jd file"
     required: true
-    default: "default_value"
+  variable:
+    description: "Define a variable in the format NAME:VALUE"
+    required: false
+  library:
+    description: "Specify a Python library to load"
+    required: false
+  diagram:
+    description: "Specify diagram pattern or wildcard"
+    required: false
+  dry_run:
+    description: "Perform a dry run without actually executing justifications"
+    required: false
+    default: "false"
 
 runs:
   using: "composite"
   steps:
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v4
       with:
         python-version: "3.13"
 
-    - name: Install Dependencies
-      run: pip install -r requirements.txt
+    - name: Install dependencies
       shell: bash
-
-    - name: Run jPipe Runner
-      env:
-        INPUT_EXAMPLE: ${{ inputs.example_input }}
       run: |
-        python -m jpipe_runner
+        pip install -r requirements.txt
+
+    - name: Run jpipe-runner
       shell: bash
+      run: |
+        python -m jpipe_runner \
+          ${{ inputs.jd_file }} \
+          ${{ inputs.variable && "--variable " + inputs.variable }} \
+          ${{ inputs.library && "--library " + inputs.library }} \
+          ${{ inputs.diagram && "--diagram " + inputs.diagram }} \
+          ${{ inputs.dry_run == 'true' && "--dry-run" }}
