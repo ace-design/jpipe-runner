@@ -1,15 +1,8 @@
-import time
-
 from setuptools import setup, find_packages
-
-
-def generate_version():
-    return time.strftime("0.1.%Y%m%d%H%M%S")
-
 
 setup(
     name="jpipe-runner",
-    version=generate_version(),
+    version="0.0.1",
     author="Jason Lyu",
     author_email="xjasonlyu@gmail.com",
     description="A Justification Runner designed for jPipe",
@@ -23,6 +16,9 @@ setup(
         "console_scripts": [
             "jpipe-runner = jpipe_runner.runner:main",
         ],
+    },
+    package_data={
+        "jpipe_runner": ["*.lark"],
     },
     classifiers=[
         "Programming Language :: Python :: 3",
