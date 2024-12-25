@@ -14,11 +14,15 @@ from typing import (Optional,
 import networkx as nx
 from networkx.drawing.nx_agraph import to_agraph
 
-from jpipe_runner.enums import ClassType, VariableType
+from jpipe_runner.enums import (ClassType,
+                                VariableType,
+                                StatusType)
 from jpipe_runner.exceptions import (InvalidJustificationException,
                                      JustificationTraverseException)
 from jpipe_runner.models import JustificationDef, ClassDef
 from jpipe_runner.parser import load_jd_file
+from jpipe_runner.runtime import PythonRuntime
+from jpipe_runner.utils import sanitize_string
 
 
 class Justification(nx.DiGraph):
@@ -39,12 +43,14 @@ class Justification(nx.DiGraph):
                                    style="filled"),
     }
 
-    @property
-    def justify_order(self) -> Iterable[str]:
-        order: list[str] = []
+    def justify_order(self,
+                      data: bool = False,
+                      ) -> Iterable[str | tuple[str, dict]]:
+        order: list[str | tuple[str, dict]] = []
 
-        def callback(n, _):
-            order.append(n)
+        def callback(n, d):
+            order.append((n, d)
+                         if data else n)
             return True
 
         self.layered_traverse(callback)
@@ -243,5 +249,44 @@ class JPipeEngine:
         jd.validate()
         return jd
 
-    def justify(self) -> bool:
-        pass
+    @property
+    def justifications(self) -> dict[str, Justification]:
+        return self._justifications
+
+    def justify(self,
+                diagram: str,
+                /,
+                dry_run: bool = False,
+                runtime: PythonRuntime = None,
+                ):
+        jd = self.justifications[diagram]
+
+        status = StatusType.PASS
+        for node, attr in jd.justify_order(data=True):
+
+            # skip all the remaining parts.
+            if dry_run or status != StatusType.PASS:
+                yield dict(name=node,
+                           status=StatusType.SKIP,
+                           **attr)
+                continue
+
+            match attr['var_type']:
+                case VariableType.EVIDENCE | VariableType.STRATEGY:
+                    message = None
+                    fn_name = sanitize_string(attr['label'])
+                    try:
+                        res = runtime.call_function(fn_name)
+                        status = StatusType.PASS if res \
+                            else StatusType.FAIL
+                    except Exception as e:
+                        message = str(e)
+                        status = StatusType.FAIL
+                    yield dict(name=node,
+                               status=status,
+                               message=message,
+                               **attr)
+                case VariableType.SUB_CONCLUSION | VariableType.CONCLUSION:
+                    yield dict(name=node,
+                               status=StatusType.PASS,
+                               **attr)

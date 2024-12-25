@@ -22,3 +22,10 @@ class VariableType(Enum):
     SUB_CONCLUSION = "sub-conclusion"
     CONCLUSION = "conclusion"
     SUPPORT = "@support"
+
+
+class StatusType(Enum):
+    """PASS / FAIL / SKIP"""
+    PASS = "PASS"
+    FAIL = "FAIL"
+    SKIP = "SKIP"
