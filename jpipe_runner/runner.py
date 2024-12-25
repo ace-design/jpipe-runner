@@ -119,7 +119,7 @@ def pretty_display(diagrams: Iterable[tuple[str, Iterable[dict]]]) -> [int, int,
             skipped_justifications += 1
 
     print(f"{jpipe_title}")
-    print(f"{total_justifications} justifications,",
+    print(f"{total_justifications} justification{'s' if total_justifications > 1 else ''},",
           f"{passed_justifications} passed,",
           f"{failed_justifications} failed,",
           f"{skipped_justifications} skipped",
