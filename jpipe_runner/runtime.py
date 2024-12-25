@@ -24,12 +24,11 @@ class PythonRuntime:
         }
         self._sandbox_locals = {}
 
-        if libraries:
-            for lib in libraries:
-                self.run_file(lib)
-        if variables:
-            for k, v in variables:
-                self.set_variable(k, v)
+        for lib in libraries or []:
+            self.run_file(lib)
+
+        for k, v in variables or []:
+            self.set_variable(k, v)
 
     def copy(self):
         return deepcopy(self)
