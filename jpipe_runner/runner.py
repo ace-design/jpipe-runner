@@ -144,7 +144,8 @@ def main():
     runtime = PythonRuntime(libraries=[i for l in args.library
                                        for i in glob.glob(l)],
                             variables=[i.split(':', maxsplit=1)
-                                       for i in args.variable])
+                                       for i in args.variable
+                                       if i.find(':')])
 
     m, n, _, s = pretty_display((d, jpipe.justify(d,
                                                   dry_run=args.dry_run,

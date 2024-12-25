@@ -46,12 +46,16 @@ runs:
         CMD="python -m jpipe_runner '${{ inputs.jd_file }}'"
         if [[ "${{ inputs.variable }}" != "" ]]; then
           while IFS= read -r line; do
-            CMD+=" --variable '${line}'"
+            if [[ -n "$line" ]]; then
+              CMD+=" --variable '${line}'"
+            fi
           done <<< "${{ inputs.variable }}"
         fi
         if [[ "${{ inputs.library }}" != "" ]]; then
           while IFS= read -r line; do
-            CMD+=" --library '${line}'"
+            if [[ -n "$line" ]]; then
+              CMD+=" --library '${line}'"
+            fi
           done <<< "${{ inputs.library }}"
         fi
         if [[ "${{ inputs.diagram }}" != "" ]]; then

@@ -23,5 +23,6 @@ jobs:
           jd_file: "examples/01_slides.jd"
           variable: |
             key:value
-          library:
+          library: |
+
           dry_run: true
