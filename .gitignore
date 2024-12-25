@@ -171,7 +171,8 @@ cython_debug/
 .pypirc
 
 # Python venv files
-/bin
+bin/*
+!bin/jpipe_runner
 pyvenv.cfg
 
 # Misc files
