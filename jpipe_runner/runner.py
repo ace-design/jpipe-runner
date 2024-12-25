@@ -7,6 +7,7 @@ This module contains the entrypoint of jPipe Runner.
 
 import argparse
 import fnmatch
+import glob
 import shutil
 import sys
 from typing import Iterable
@@ -140,7 +141,8 @@ def main():
         print(f"No justification diagram found: {args.diagram}")
         sys.exit(1)
 
-    runtime = PythonRuntime(libraries=args.library,
+    runtime = PythonRuntime(libraries=[i for l in args.library
+                                       for i in glob.glob(l)],
                             variables=[i.split(':', maxsplit=1)
                                        for i in args.variable])
 
