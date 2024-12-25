@@ -172,7 +172,7 @@ cython_debug/
 
 # Python venv files
 bin/*
-!bin/jpipe_runner
+!bin/jpipe-runner
 pyvenv.cfg
 
 # Misc files
