@@ -1,4 +1,8 @@
-name: Test jpipe-runner
+name: Test jPipe Runner
+
+concurrency:
+  group: runner-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
   push:
@@ -6,7 +10,7 @@ on:
       - main
 
 jobs:
-  run-jpipe:
+  jpipe-runner:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +21,7 @@ jobs:
         uses: ./
         with:
           jd_file: "examples/01_slides.jd"
-          variable: "key:value"
-          library: ""
-          diagram: "*"
-          dry_run: "true"
+          variable: |
+            key:value
+          library:
+          dry_run: true

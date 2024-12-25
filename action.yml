@@ -7,14 +7,15 @@ inputs:
     description: "Path to the justification .jd file"
     required: true
   variable:
-    description: "Define a variable in the format NAME:VALUE"
+    description: "Define one or more variables in the format NAME:VALUE, separated by newlines"
     required: false
   library:
-    description: "Specify a Python library to load"
+    description: "Specify one or more Python libraries to load, separated by newlines"
     required: false
   diagram:
     description: "Specify diagram pattern or wildcard"
     required: false
+    default: "*"
   dry_run:
     description: "Perform a dry run without actually executing justifications"
     required: false
@@ -44,10 +45,14 @@ runs:
       run: |
         CMD="python -m jpipe_runner '${{ inputs.jd_file }}'"
         if [[ "${{ inputs.variable }}" != "" ]]; then
-          CMD+=" --variable '${{ inputs.variable }}'"
+          while IFS= read -r line; do
+            CMD+=" --variable '${line}'"
+          done <<< "${{ inputs.variable }}"
         fi
         if [[ "${{ inputs.library }}" != "" ]]; then
-          CMD+=" --library '${{ inputs.library }}'"
+          while IFS= read -r line; do
+            CMD+=" --library '${line}'"
+          done <<< "${{ inputs.library }}"
         fi
         if [[ "${{ inputs.diagram }}" != "" ]]; then
           CMD+=" --diagram '${{ inputs.diagram }}'"
