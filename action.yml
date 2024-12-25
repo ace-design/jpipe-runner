@@ -36,9 +36,18 @@ runs:
     - name: Run jpipe-runner
       shell: bash
       run: |
-        python -m jpipe_runner \
-          ${{ inputs.jd_file }} \
-          ${{ inputs.variable && "--variable " + inputs.variable }} \
-          ${{ inputs.library && "--library " + inputs.library }} \
-          ${{ inputs.diagram && "--diagram " + inputs.diagram }} \
-          ${{ inputs.dry_run == 'true' && "--dry-run" }}
+        CMD="python -m jpipe_runner '${{ inputs.jd_file }}'"
+        if [[ "${{ inputs.variable }}" != "" ]]; then
+          CMD+=" --variable '${{ inputs.variable }}'"
+        fi
+        if [[ "${{ inputs.library }}" != "" ]]; then
+          CMD+=" --library '${{ inputs.library }}'"
+        fi
+        if [[ "${{ inputs.diagram }}" != "" ]]; then
+          CMD+=" --diagram '${{ inputs.diagram }}'"
+        fi
+        if [[ "${{ inputs.dry_run }}" == "true" ]]; then
+          CMD+=" --dry-run"
+        fi
+        echo "Running command: $CMD"
+        eval $CMD
