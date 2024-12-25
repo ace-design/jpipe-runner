@@ -6,6 +6,7 @@ This module contains the runtimes that can be used by jPipe Runner.
 """
 
 from ast import literal_eval
+from copy import deepcopy
 from typing import Any, Iterable, Optional, Tuple
 
 from jpipe_runner.exceptions import RunnerRuntimeException
@@ -29,6 +30,9 @@ class PythonRuntime:
         if variables:
             for k, v in variables:
                 self.set_variable(k, v)
+
+    def copy(self):
+        return deepcopy(self)
 
     def run_code(self, code: str) -> None:
         try:
