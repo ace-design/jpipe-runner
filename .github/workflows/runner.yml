@@ -17,12 +17,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use jpipe-runner
-        uses: ./
+      - name: Justify Slides
+        uses: ./  # use local action.yml
         with:
-          jd_file: "examples/01_slides.jd"
+          jd_file: "examples/models/01_slides.jd"
           variable: |
             key:value
           library: |
+            examples/libraries/*.py
 
-          dry_run: true
+      - name: Justify Notebook Quality
+        uses: ./
+        with:
+          jd_file: "examples/models/02_quality_full.jd"
+          variable: |
+            notebook:notebook.ipynb
+          library: |
+            examples/libraries/*.py
