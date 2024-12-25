@@ -30,7 +30,7 @@ JPIPE_RUNNER_ASCII = r"""
 
 
 def parse_args(argv=None):
-    parser = argparse.ArgumentParser(prog="jpipe_runner",
+    parser = argparse.ArgumentParser(prog="jpipe-runner",
                                      description=("McMaster University - McSCert (c) 2023-..."
                                                   + JPIPE_RUNNER_ASCII),
                                      formatter_class=argparse.RawTextHelpFormatter)
