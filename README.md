@@ -14,7 +14,8 @@ A Justification Runner designed for jPipe.
 ## Features
 
 - Fully compatible with existing jPipe syntax/grammar.
-- A keyword-driven operational justification diagram.
+    - Support `load`, `justification`, `pattern`, and `composition`.
+- A keyword-driven operational justification diagram framework.
 
 ## Motivation
 
@@ -34,3 +35,45 @@ acceptance testing. It uses a simple plain-text syntax and can be extended with 
 Justification Diagram executable and operational. With this extension, each _justification evidence/strategy_ could be
 mapped to corresponding executable code, transforming jPipe from a purely visual reasoning tool into a fully automated
 CI/CD-style justification framework.
+
+## Installation
+
+jPipe Runner requires:
+
+- Python (version 3.12 or later)
+- [Graphviz](https://www.graphviz.org/) (version 2.46 or later)
+- C/C++ Compiler
+
+> [!NOTE]
+> These instructions assume you have Python, Graphviz and a C/C++ Compiler on your computer.
+
+### Pip
+
+```shell
+$ pip3 install https://github.com/xjasonlyu/jpipe-runner.git
+```
+
+### Docker
+
+We currently do not provide jpipe-runner images on the public registry, so you will need to build it yourself.
+
+```shell
+$ docker build -t jpipe-runner:latest .
+```
+
+### Actions
+
+Alternatively, you can simply integrate jpipe runner into your actions.
+
+```yaml
+steps:
+- uses: xjasonlyu/jpipe-runner@main
+  with:
+    jd_file: "/path/to/your/justification.jd"
+    variable: |
+      key:value
+    library: |
+      path/to/libraries/*.py
+    diagram: "*"
+    dry_run: false
+```
