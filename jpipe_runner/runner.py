@@ -149,7 +149,7 @@ def main():
 
     m, n, _, s = pretty_display((d, jpipe.justify(d,
                                                   dry_run=args.dry_run,
-                                                  runtime=runtime.copy()))
+                                                  runtime=runtime))
                                 for d in diagrams)
 
     # exit 0 only when all justifications passed/skipped

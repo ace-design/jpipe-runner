@@ -20,9 +20,18 @@ def check_pep8_coding_standard():
     return res
 
 
+def verify_notebook_has_linear_execution_order():
+    res = fake_fs[notebook]["linear_exec_order"]
+    quality_results.append(res)
+    return res
+
+
 def assess_quality_gates_are_met():
     return all(quality_results)
 
 
 def notebook_file_exists():
-    return notebook in fake_fs
+    global notebook
+    if notebook not in fake_fs:
+        raise FileNotFoundError(f"notebook '{notebook}' not found")
+    return True
