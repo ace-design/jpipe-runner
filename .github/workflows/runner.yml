@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Justify Slides
-        uses: ./  # use local action.yml
+        uses: xjasonlyu/jpipe-runner@main
         with:
           jd_file: "examples/models/01_slides.jd"
           variable: |
