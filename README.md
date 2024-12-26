@@ -50,7 +50,7 @@ jPipe Runner requires:
 ### Pip
 
 ```shell
-$ pip install https://github.com/xjasonlyu/jpipe-runner.git
+$ pip install git+https://github.com/xjasonlyu/jpipe-runner.git@main
 ```
 
 ### Docker
