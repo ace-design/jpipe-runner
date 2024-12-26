@@ -22,7 +22,8 @@ jobs:
         with:
           jd_file: "examples/models/01_slides.jd"
           variable: |
-            key:value
+            signature:jason
+            available:ready
           library: |
             examples/libraries/*.py
 
