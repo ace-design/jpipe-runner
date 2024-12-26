@@ -28,7 +28,7 @@ jobs:
             examples/libraries/*.py
 
       - name: Justify Notebook Quality
-        uses: ./
+        uses: xjasonlyu/jpipe-runner@main
         with:
           jd_file: "examples/models/02_quality_full.jd"
           variable: |
