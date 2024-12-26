@@ -20,7 +20,8 @@ def sanitize_string(s: str) -> str:
     # Use re to keep only allowed characters.
     sanitized = re.sub(r'[^a-z0-9_]', '',
                        re.sub(r'\s+', '_',
-                              s.lower().strip()))
+                              re.sub(r'[/|\\]', ' ', s)
+                              .lower().strip()))
     return sanitized
 
 
@@ -36,6 +37,7 @@ def _test():
     assert sanitize_string('Hello,              world!') == 'hello_world'
     assert sanitize_string('Check contents w.r.t. NDA ') == 'check_contents_wrt_nda'
     assert sanitize_string('Check PEP8 coding standard') == 'check_pep8_coding_standard'
+    assert sanitize_string('Check        Grammar/Typos') == 'check_grammar_typos'
 
 
 if __name__ == "__main__":
