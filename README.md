@@ -11,12 +11,6 @@
 
 A Justification Runner designed for jPipe.
 
-## Features
-
-- Fully compatible with existing jPipe syntax/grammar.
-    - Support `load`, `justification`, `pattern`, and `composition`.
-- A keyword-driven operational justification diagram framework.
-
 ## Motivation
 
 In the current Justification Diagram of [jPipe](https://github.com/ace-design/jpipe), the primary focus is on describing
@@ -35,6 +29,17 @@ acceptance testing. It uses a simple plain-text syntax and can be extended with 
 Justification Diagram executable and operational. With this extension, each _justification evidence/strategy_ could be
 mapped to corresponding executable code, transforming jPipe from a purely visual reasoning tool into a fully automated
 CI/CD-style justification framework.
+
+## Features
+
+- Fully compatible with existing jPipe syntax/grammar.
+    - Support `load`, `justification`, `pattern`, and `composition`.
+- A keyword-driven operational justification diagram framework.
+
+## Repository organization
+
+- `examples`: examples of models, images, and libraries
+- `jpipe_runner`: Python source code of the jPipe runner
 
 ## Installation
 
