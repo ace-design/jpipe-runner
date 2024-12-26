@@ -50,7 +50,7 @@ jPipe Runner requires:
 ### Pip
 
 ```shell
-$ pip3 install https://github.com/xjasonlyu/jpipe-runner.git
+$ pip install https://github.com/xjasonlyu/jpipe-runner.git
 ```
 
 ### Docker
@@ -67,13 +67,107 @@ Alternatively, you can simply integrate jpipe runner into your actions.
 
 ```yaml
 steps:
-- uses: xjasonlyu/jpipe-runner@main
-  with:
-    jd_file: "/path/to/your/justification.jd"
-    variable: |
-      key:value
-    library: |
-      path/to/libraries/*.py
-    diagram: "*"
-    dry_run: false
+  - uses: xjasonlyu/jpipe-runner@main
+    with:
+      jd_file: "/path/to/your/justification.jd"
+      variable: |
+        key:value
+      library: |
+        path/to/libraries/*.py
+      diagram: "*"
+      dry_run: false
 ```
+
+## Examples
+
+Consider this justification diagram: It has two pieces of evidence supporting two strategies; these strategies support
+each sub-conclusion, which further supports the final strategy, and then reaches the conclusion.
+
+![slides](./examples/images/slides.png)
+
+To justify this diagram, we can map each evidence/strategy to a Python function, and the jpipe runner will call the
+corresponding function based on the order of justification, i.e. evidence -> strategy, and only if that function returns
+a non-false result, the justification process will proceed.
+
+For example, consider the following Python demo code:
+
+```python
+signature = None
+available = None
+
+cons = []
+
+
+def nda_is_signed():
+    return signature == 'jason'
+
+
+def slides_are_available():
+    return available
+
+
+def check_contents_wrt_nda():
+    x = "ok"
+    cons.append(x)
+    return x
+
+
+def check_grammar_typos():
+    x = "loos good!"
+    cons.append(x)
+    return x
+
+
+def all_conditions_are_met():
+    return all(cons)
+```
+
+Run the justification with jpipe runner:
+
+```shell
+python -m jpipe_runner \
+  -l 'examples/libraries/slides.py' \
+  -v signature:jason \
+  -v available:ready \
+  examples/models/01_slides.jd
+```
+
+The runner output is as follows:
+
+```text
+==============================================================================
+jPipe Files                                                               
+==============================================================================
+jPipe Files.Justification :: slides                                       
+==============================================================================
+Evidence<nda> :: NDA is signed                                        | PASS |
+------------------------------------------------------------------------------
+Evidence<available> :: Slides are available                           | PASS |
+------------------------------------------------------------------------------
+Strategy<grammar> :: Check Grammar/Typos                              | PASS |
+------------------------------------------------------------------------------
+Strategy<compliant> :: Check contents w.r.t. NDA                      | PASS |
+------------------------------------------------------------------------------
+Sub-Conclusion<decent> :: Professional standard are met               | PASS |
+------------------------------------------------------------------------------
+Sub-Conclusion<legal> :: content is approved by legal                 | PASS |
+------------------------------------------------------------------------------
+Strategy<all> :: All conditions are met                               | PASS |
+------------------------------------------------------------------------------
+Conclusion<ready> :: Presentation is Ready                            | PASS |
+------------------------------------------------------------------------------
+jPipe Files
+1 justification, 1 passed, 0 failed, 0 skipped
+==============================================================================
+```
+
+_If any step (evidence/strategy) fails during the justification process, the remaining steps will be skipped and the
+entire justification will fail._
+
+## Contributing
+
+Found a bug, or want to add a cool feature? Feel free to fork this repository and send a pull request.
+
+If you're interested in contributing to the research effort related to jPipe projects, feel free to contact the PI:
+
+- [Dr. Sébastien Mosser](mailto:mossers@mcmaster.ca)

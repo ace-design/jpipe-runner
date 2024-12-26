@@ -178,5 +178,4 @@ pyvenv.cfg
 # Misc files
 /.idea
 /.vscode
-/images
 .DS_Store
