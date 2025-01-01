@@ -160,7 +160,7 @@ def main():
             sys.exit(1)
         generate_image(jpipe.justifications[diagrams[0]],
                        args.output)
-        return
+        sys.exit(0)
 
     runtime = PythonRuntime(libraries=[i for l in args.library
                                        for i in glob.glob(l)],
