@@ -8,6 +8,7 @@ This module contains the entrypoint of jPipe Runner.
 import argparse
 import fnmatch
 import glob
+import os.path
 import shutil
 import sys
 from typing import Iterable
@@ -15,7 +16,7 @@ from typing import Iterable
 from termcolor import colored
 
 from jpipe_runner.enums import StatusType
-from jpipe_runner.jpipe import JPipeEngine
+from jpipe_runner.jpipe import JPipeEngine, Justification
 from jpipe_runner.runtime import PythonRuntime
 
 # Generate:
@@ -41,8 +42,8 @@ def parse_args(argv=None):
                         help="Specify a Python library to load")
     parser.add_argument("--diagram", "-d", metavar="PATTERN", default="*",
                         help="Specify diagram pattern or wildcard")
-    # parser.add_argument("--output", "-o", metavar="FILE",
-    #                     help="Output file for generated diagram image")
+    parser.add_argument("--output", "-o", metavar="FILE",
+                        help="Output file for generated diagram image")
     parser.add_argument("--dry-run", action="store_true",
                         help="Perform a dry run without actually executing justifications")
     # parser.add_argument("--verbose", "-V", action="store_true",
@@ -51,6 +52,12 @@ def parse_args(argv=None):
                         help="Path to the justification .jd file")
 
     return parser.parse_args(argv)
+
+
+def generate_image(jd: Justification, output: str) -> None:
+    _, fmt = os.path.splitext(output)
+    jd.export_to_image(path=output,
+                       format=(fmt[1:] if fmt else "png"))
 
 
 def pretty_display(diagrams: Iterable[tuple[str, Iterable[dict]]]) -> [int, int, int, int]:
@@ -138,8 +145,17 @@ def main():
                 if fnmatch.fnmatch(jd, args.diagram)]
 
     if not diagrams:
-        print(f"No justification diagram found: {args.diagram}")
+        print(f"No justification diagram found: {args.diagram}", file=sys.stderr)
         sys.exit(1)
+
+    if args.output:
+        print("Output is set, generating diagram image...", file=sys.stderr)
+        if len(diagrams) != 1:
+            print("Multiple justification diagrams found, but only one diagram allowed", file=sys.stderr)
+            sys.exit(1)
+        generate_image(jpipe.justifications[diagrams[0]],
+                       args.output)
+        return
 
     runtime = PythonRuntime(libraries=[i for l in args.library
                                        for i in glob.glob(l)],
