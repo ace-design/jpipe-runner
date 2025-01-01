@@ -7,7 +7,8 @@ This module contains the core of jPipe Runner.
 
 from collections import deque
 from copy import deepcopy
-from typing import (Optional,
+from typing import (Any,
+                    Optional,
                     Callable,
                     Iterable,
                     Iterator)
@@ -160,7 +161,7 @@ class Justification(nx.DiGraph):
                         f"abstract support '{n}' should not be included in a justification class")
 
     def export_to_image(self,
-                        path: Optional[str] = None,
+                        path: Optional[Any] = None,
                         format: Optional[str] = None,
                         ) -> bytes | None:
         agraph = to_agraph(self)

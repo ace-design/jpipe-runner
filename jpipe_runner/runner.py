@@ -11,7 +11,7 @@ import glob
 import os.path
 import shutil
 import sys
-from typing import Iterable
+from typing import Any, Iterable
 
 from termcolor import colored
 
@@ -54,8 +54,13 @@ def parse_args(argv=None):
     return parser.parse_args(argv)
 
 
-def generate_image(jd: Justification, output: str) -> None:
+def generate_image(jd: Justification, output: Any) -> None:
     _, fmt = os.path.splitext(output)
+    match output:
+        case "stdout" | "STDOUT":
+            output = sys.stdout.buffer
+        case "stderr" | "STDERR":
+            output = sys.stderr.buffer
     jd.export_to_image(path=output,
                        format=(fmt[1:] if fmt else "png"))
 
