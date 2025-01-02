@@ -55,7 +55,7 @@ jPipe Runner requires:
 ### Pip
 
 ```shell
-$ pip install git+https://github.com/xjasonlyu/jpipe-runner.git@main
+$ pip install -U git+https://github.com/xjasonlyu/jpipe-runner.git@main
 ```
 
 ### Docker
