@@ -44,22 +44,22 @@ class PythonRuntime:
 
         self._modules.append(module)
 
-    def _find_module_by_attr(self, name: str) -> Any:
-        for module in self._modules:
-            if name in dir(module):
-                return module
+    def _find_modules_by_attr(self, name: str) -> list[Any]:
+        if modules := [module for module in self._modules if name in dir(module)]:
+            return modules
         raise RuntimeException(f"'{type(self).__name__}' object has no attribute '{name}'")
 
     def __getattr__(self, name):
-        module = self._find_module_by_attr(name)
-        return getattr(module, name)
+        modules = self._find_modules_by_attr(name)
+        return getattr(modules[0], name)
 
     def call_function(self, name: str, *args, **kwargs) -> Any:
         return self.__getattr__(name)(*args, **kwargs)
 
     def set_variable(self, name: str, value: Any) -> None:
-        module = self._find_module_by_attr(name)
-        return setattr(module, name, value)
+        modules = self._find_modules_by_attr(name)
+        for module in modules:
+            setattr(module, name, value)
 
     def set_variable_literal(self, name: str, literal: str) -> None:
         self.set_variable(name, literal_eval(literal))
