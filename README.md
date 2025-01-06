@@ -55,7 +55,7 @@ jPipe Runner requires:
 ### Pip
 
 ```shell
-$ pip install -U git+https://github.com/xjasonlyu/jpipe-runner.git@main
+$ pip install -U git+https://github.com/ace-design/jpipe-runner.git@main
 ```
 
 ### Docker
@@ -72,7 +72,7 @@ Alternatively, you can simply integrate jpipe runner into your actions.
 
 ```yaml
 steps:
-  - uses: xjasonlyu/jpipe-runner@main
+  - uses: ace-design/jpipe-runner@main
     with:
       jd_file: "/path/to/your/justification.jd"
       variable: |

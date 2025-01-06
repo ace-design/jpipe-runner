@@ -8,7 +8,7 @@ setup(
     description="A Justification Runner designed for jPipe",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/xjasonlyu/jpipe-runner",
+    url="https://github.com/ace-design/jpipe-runner",
     packages=find_packages(),
     install_requires=open("requirements.txt").read().splitlines(),
     python_requires=">=3.13",
