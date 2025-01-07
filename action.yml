@@ -21,7 +21,7 @@ inputs:
     required: false
     default: "false"
   version:
-    description: "jpipe runner version to use, e.g. '0.0.1'. The main branch version is used by default"
+    description: "jPipe Runner version to use, e.g. '0.0.1'. The main branch version is used by default"
     required: false
     default: "main"
 
