@@ -20,6 +20,10 @@ inputs:
     description: "Perform a dry run without actually executing justifications"
     required: false
     default: "false"
+  version:
+    description: "jpipe runner version to use, e.g. '0.0.1'. The main branch version is used by default"
+    required: false
+    default: "main"
 
 runs:
   using: "composite"
@@ -38,7 +42,7 @@ runs:
           --no-install-recommends \
           --no-install-suggests -y \
           graphviz graphviz-dev
-        pip install -r requirements.txt
+        pip install -U 'git+https://github.com/ace-design/jpipe-runner.git@${{ inputs.version }}'
 
     - name: Run jpipe-runner
       shell: bash
