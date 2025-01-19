@@ -23,7 +23,7 @@ from jpipe_runner.exceptions import (InvalidJustificationException,
                                      JustificationTraverseException,
                                      FunctionException)
 from jpipe_runner.models import JustificationDef, ClassDef
-from jpipe_runner.parser import load_jd_file
+from jpipe_runner.parser import load_jd_file, parse_jd_json_file
 from jpipe_runner.runtime import PythonRuntime
 from jpipe_runner.utils import sanitize_string
 
@@ -196,6 +196,20 @@ class JPipeEngine:
     def __init__(self,
                  jd_file: str,
                  ):
+        """TODO:
+        Currently JPipeEngine only supports to load and parse .jd files.
+        To extend the ability to support a more general form of justification
+        representation such as JSON files, A `parse_jd_json_file` function
+        is added in the parser module, which can be imported like
+        `from parser import parse_jd_json_file`. This function works just like
+        the `load_jd_file` or `parse_jd_file` function, but for JSON file
+        format instead. The format of the JSON content is similar to the .jd
+        justification file and an example can be found in
+        `examples/models/01_slides.json`.
+
+        E.g., with the following line to parse the JSON justification file directly.
+        >>> self._model = parse_jd_json_file(filename=jd_file)
+        """
         self._model = load_jd_file(filename=jd_file)
         self._justifications: dict[str, Justification] = {}
         self._init_model()
