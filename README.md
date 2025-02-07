@@ -166,7 +166,7 @@ entire justification will fail._
 
 ## How to cite?
 
-```text
+```bibtex
 @software{mcscert:jpipe-runner,
   author = {Mosser, Sébastien and Lyu, Jason},
   license = {MIT},
