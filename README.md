@@ -164,7 +164,18 @@ jPipe Files
 _If any step (evidence/strategy) fails during the justification process, the remaining steps will be skipped and the
 entire justification will fail._
 
-## Contributing
+## How to cite?
+
+```text
+@software{mcscert:jpipe-runner,
+  author = {Mosser, Sébastien and Lyu, Jason},
+  license = {MIT},
+  title = {{jPipe Runner}},
+  url = {https://github.com/ace-design/jpipe-runner}
+}
+```
+
+## How to contribute?
 
 Found a bug, or want to add a cool feature? Feel free to fork this repository and send a pull request.
 
