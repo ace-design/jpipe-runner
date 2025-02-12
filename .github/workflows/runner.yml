@@ -53,7 +53,7 @@ jobs:
           poetry add rich
 
       - name: Justify Notebook Quality
-        uses: ace-design/jpipe-runner@poetry
+        uses: ace-design/jpipe-runner@main
         with:
           jd_file: "models/02_quality_full.jd"
           python_path: "poetry run python"
