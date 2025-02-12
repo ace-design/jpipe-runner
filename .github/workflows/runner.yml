@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   jpipe-runner:
@@ -25,7 +26,7 @@ jobs:
             signature:jason
             available:ready
           library: |
-            examples/libraries/*.py
+            examples/libraries/slides.py
 
       - name: Justify Notebook Quality
         uses: ace-design/jpipe-runner@main
@@ -34,4 +35,4 @@ jobs:
           variable: |
             notebook:notebook.ipynb
           library: |
-            examples/libraries/*.py
+            examples/libraries/notebook.py
