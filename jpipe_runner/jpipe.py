@@ -14,7 +14,6 @@ from typing import (Any,
                     Iterator)
 
 import networkx as nx
-from networkx.drawing.nx_agraph import to_agraph
 
 from jpipe_runner.enums import (ClassType,
                                 VariableType,
@@ -164,6 +163,11 @@ class Justification(nx.DiGraph):
                         path: Optional[Any] = None,
                         format: Optional[str] = None,
                         ) -> bytes | None:
+        try:
+            from networkx.drawing.nx_agraph import to_agraph
+        except ImportError as e:
+            raise ImportError("pygraphviz is required to enable this feature") from e
+
         agraph = to_agraph(self)
 
         agraph.graph_attr.update(

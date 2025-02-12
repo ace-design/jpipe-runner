@@ -46,11 +46,23 @@ CI/CD-style justification framework.
 jPipe Runner requires:
 
 - Python (version 3.12 or later)
+
+Optional dependency:
+
 - [Graphviz](https://www.graphviz.org/) (version 2.46 or later)
 - C/C++ Compiler
 
 > [!NOTE]
-> These instructions assume you have Python, Graphviz and a C/C++ Compiler on your computer.
+> Graphviz is required and used for debugging purposes only.
+
+To install `graphviz` on Debian/Ubuntu:
+
+```shell
+$ sudo apt-get install \
+    --no-install-recommends \
+    --no-install-suggests -y \
+    graphviz graphviz-dev
+ ```
 
 ### Pip
 

@@ -33,15 +33,9 @@ runs:
       with:
         python-version: "3.13"
 
-    - name: Install dependencies
+    - name: Install jpipe-runner
       shell: bash
-      env:
-        DEBIAN_FRONTEND: "noninteractive"
       run: |
-        sudo apt-get install \
-          --no-install-recommends \
-          --no-install-suggests -y \
-          graphviz graphviz-dev
         pip install -U 'git+https://github.com/ace-design/jpipe-runner.git@${{ inputs.version }}'
 
     - name: Run jpipe-runner
