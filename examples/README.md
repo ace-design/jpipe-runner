@@ -59,3 +59,32 @@ Then, users need to define:
 - `library`: paths to all required library scripts with wildcard support.
 
 For more detailed jPipe Runner action arguments, please refer to the `inputs` field in the [action.yml](../action.yml).
+
+### Use in Poetry Environment
+
+When working with Poetry or other Python env management tools, users must first manually set up their Python env.
+
+```yaml
+  - name: Create/Set up Poetry environment
+    run: |
+      cd examples
+      poetry init -n
+      poetry config virtualenvs.in-project true
+      poetry add rich
+
+  - name: Justify Notebook Quality
+    uses: ace-design/jpipe-runner@poetry
+    with:
+      jd_file: "models/02_quality_full.jd"
+      python_path: "poetry run python"
+      working_directory: "./examples"
+      variable: |
+        notebook:notebook.ipynb
+      library: |
+        libraries/notebook.py
+```
+
+Also, there are additional options that may need to be specified:
+
+- `python_path`: the Python path you want to use to run jpipe-runner.
+- `working_directory`: the path to your Python project, leave empty if it's in the current directory.
