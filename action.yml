@@ -24,6 +24,10 @@ inputs:
     description: "Specify a Python path to run jPipe Runner"
     required: false
     default: ""
+  working_directory:
+    description: "Specify a working directory to run jPipe Runner"
+    required: false
+    default: "."
   version:
     description: "jPipe Runner version to use, e.g. '0.0.1'. The main branch version is used by default"
     required: false
@@ -42,14 +46,14 @@ runs:
       shell: bash
       env:
         PYTHON_PATH: ${{ inputs.python_path || 'python' }}
+      working-directory: ${{ inputs.working_directory }}
       run: |
         if $PYTHON_PATH -c "import jpipe_runner" &> /dev/null; then
             echo "jpipe-runner already installed"
             exit 0
         fi
 
-        REAL_PYTHON_PATH=$($PYTHON_PATH -c "import sys; print(sys.executable)")
-        if [[ "$REAL_PYTHON_PATH" == *"/.cache/pypoetry/virtualenvs/"* ]]; then
+        if poetry env info --path &> /dev/null; then
           # Install dependency via poetry
           poetry add 'git+https://github.com/ace-design/jpipe-runner.git@${{ inputs.version }}'
         else
@@ -61,6 +65,7 @@ runs:
       shell: bash
       env:
         PYTHON_PATH: ${{ inputs.python_path || 'python' }}
+      working-directory: ${{ inputs.working_directory }}
       run: |
         CMD="$PYTHON_PATH -m jpipe_runner '${{ inputs.jd_file }}'"
         if [[ "${{ inputs.variable }}" != "" ]]; then
