@@ -1,0 +1,30 @@
+name: Test jPipe Runner
+
+concurrency:
+  group: runner-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  jpipe-runner:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Justify Slides
+        uses: ace-design/jpipe-runner@main
+        with:
+          jd_file: "examples/models/01_slides.jd"
+          variable: |
+            signature:jason
+            available:ready
+          library: |
+            examples/libraries/slides.py
+
