@@ -1,9 +1,5 @@
 name: JPipe Runner - Poetry demonstration
 
-concurrency:
-  group: runner-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: true
-
 on:
   push:
     branches:
