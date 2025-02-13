@@ -1,5 +1,7 @@
 """Notebook"""
 
+from rich import print
+
 # This var will be set from CLI
 notebook = None
 
@@ -27,6 +29,7 @@ def verify_notebook_has_linear_execution_order():
 
 
 def assess_quality_gates_are_met():
+    print("Assessing all quality gates!")
     return all(quality_results)
 
 

@@ -20,6 +20,14 @@ inputs:
     description: "Perform a dry run without actually executing justifications"
     required: false
     default: "false"
+  python_path:
+    description: "Specify a Python path to run jPipe Runner"
+    required: false
+    default: ""
+  working_directory:
+    description: "Specify a working directory to run jPipe Runner"
+    required: false
+    default: "."
   version:
     description: "jPipe Runner version to use, e.g. '0.0.1'. The main branch version is used by default"
     required: false
@@ -29,19 +37,37 @@ runs:
   using: "composite"
   steps:
     - name: Set up Python
+      if: ${{ !inputs.python_path }}
       uses: actions/setup-python@v5
       with:
         python-version: "3.13"
 
     - name: Install jpipe-runner
       shell: bash
+      env:
+        PYTHON_PATH: ${{ inputs.python_path || 'python' }}
+      working-directory: ${{ inputs.working_directory }}
       run: |
-        pip install -U 'git+https://github.com/ace-design/jpipe-runner.git@${{ inputs.version }}'
+        if $PYTHON_PATH -c "import jpipe_runner" &> /dev/null; then
+            echo "jpipe-runner already installed"
+            exit 0
+        fi
+
+        if poetry env info --path &> /dev/null; then
+          # Install dependency via poetry
+          poetry add 'git+https://github.com/ace-design/jpipe-runner.git@${{ inputs.version }}'
+        else
+          # Fallback to pip installation
+          $PYTHON_PATH -m pip install -U 'git+https://github.com/ace-design/jpipe-runner.git@${{ inputs.version }}'
+        fi
 
     - name: Run jpipe-runner
       shell: bash
+      env:
+        PYTHON_PATH: ${{ inputs.python_path || 'python' }}
+      working-directory: ${{ inputs.working_directory }}
       run: |
-        CMD="python -m jpipe_runner '${{ inputs.jd_file }}'"
+        CMD="$PYTHON_PATH -m jpipe_runner '${{ inputs.jd_file }}'"
         if [[ "${{ inputs.variable }}" != "" ]]; then
           while IFS= read -r line; do
             if [[ -n "$line" ]]; then
