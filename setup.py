@@ -11,7 +11,7 @@ setup(
     url="https://github.com/ace-design/jpipe-runner",
     packages=find_packages(),
     install_requires=open("requirements.txt").read().splitlines(),
-    python_requires=">=3.13",
+    python_requires=">=3.10",
     entry_points={
         "console_scripts": [
             "jpipe-runner = jpipe_runner.runner:main",
