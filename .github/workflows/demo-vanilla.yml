@@ -1,4 +1,4 @@
-name: Test jPipe Runner
+name: JPipe Runner - Vanilla demonstration
 
 concurrency:
   group: runner-${{ github.event_name }}-${{ github.ref }}
