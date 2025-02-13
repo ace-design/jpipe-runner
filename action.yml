@@ -48,10 +48,10 @@ runs:
         PYTHON_PATH: ${{ inputs.python_path || 'python' }}
       working-directory: ${{ inputs.working_directory }}
       run: |
-        if $PYTHON_PATH -c "import jpipe_runner" &> /dev/null; then
-            echo "jpipe-runner already installed"
-            exit 0
-        fi
+        # if $PYTHON_PATH -c "import jpipe_runner" &> /dev/null; then
+        #    echo "jpipe-runner already installed"
+        #    exit 0
+        # fi
 
         if poetry env info --path &> /dev/null; then
           # Install dependency via poetry
