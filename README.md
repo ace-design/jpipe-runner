@@ -45,7 +45,7 @@ CI/CD-style justification framework.
 
 jPipe Runner requires:
 
-- Python (version 3.12 or later)
+- Python (version 3.10 or later)
 
 Optional dependency:
 
