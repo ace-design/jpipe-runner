@@ -28,4 +28,4 @@ def check_grammar_typos():
 
 
 def all_conditions_are_met():
-    return all(cons)
+    return len(cons) == 2 and all(cons)
