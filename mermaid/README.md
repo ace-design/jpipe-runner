@@ -1,6 +1,6 @@
 # Mermaid Architecture Flowchart
 
-Powered by [Mermaid](https://github.com/mermaid-js/mermaid)
+Powered by [Mermaid](https://github.com/mermaid-js/mermaid) - Generate diagrams from markdown-like text.
 
 ## Generate
 
