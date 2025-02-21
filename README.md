@@ -41,6 +41,10 @@ CI/CD-style justification framework.
 - `examples`: examples of models, images, and libraries
 - `jpipe_runner`: Python source code of the jPipe runner
 
+## Architecture
+
+![arch](./mermaid/architecture.svg)
+
 ## Installation
 
 jPipe Runner requires:
