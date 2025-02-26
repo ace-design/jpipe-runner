@@ -255,6 +255,7 @@ class JPipeEngine:
             jd.add_node(name,
                         label=item.description,
                         var_type=item.var_type,
+                        status=None,  # init
                         )
 
         def check_vars(*args):
@@ -282,32 +283,43 @@ class JPipeEngine:
                 ) -> Iterator[dict]:
         jd = self.justifications[diagram]
 
-        status = StatusType.PASS
         for node, attr in jd.justify_order(data=True):
 
-            # skip all the remaining parts.
-            if dry_run or status != StatusType.PASS:
-                yield dict(name=node,
-                           status=StatusType.SKIP,
-                           **attr)
+            # get all statuses of its predecessors
+            pre_statuses = [
+                jd.nodes[i]['status']
+                for i in jd.predecessors(node)
+            ]
+
+            # check if predecessors have set status
+            assert None not in pre_statuses
+
+            # check if all predecessors have passed
+            all_passed = all(x is StatusType.PASS for x in pre_statuses)
+
+            # skip all other parts if conditions are not met
+            if dry_run or not all_passed:
+                attr['status'] = StatusType.SKIP
+                yield dict(name=node, **attr)
                 continue
 
             match attr['var_type']:
                 case VariableType.EVIDENCE | VariableType.STRATEGY:
                     exception = None
                     fn_name = sanitize_string(attr['label'])
+                    # initiate to PASS
+                    attr['status'] = StatusType.PASS
                     try:
                         if not (res := runtime.call_function(fn_name)):
                             raise FunctionException(
                                 f"function '{fn_name}' returns non-true result: {res}")
                     except Exception as e:
                         exception = f'{type(e).__name__}: {e}'
-                        status = StatusType.FAIL
+                        # set to FAIL due to exceptions
+                        attr['status'] = StatusType.FAIL
                     yield dict(name=node,
-                               status=status,
                                exception=exception,
                                **attr)
                 case VariableType.SUB_CONCLUSION | VariableType.CONCLUSION:
-                    yield dict(name=node,
-                               status=StatusType.PASS,
-                               **attr)
+                    attr['status'] = StatusType.PASS
+                    yield dict(name=node, **attr)
