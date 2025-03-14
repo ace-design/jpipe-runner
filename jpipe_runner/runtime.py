@@ -11,6 +11,7 @@ from ast import literal_eval
 from typing import Any, Iterable, Optional, Tuple
 
 from jpipe_runner.exceptions import RuntimeException
+from jpipe_runner.utils import group_github_logs
 
 
 class PythonRuntime:
@@ -54,7 +55,8 @@ class PythonRuntime:
         return getattr(modules[0], name)
 
     def call_function(self, name: str, *args, **kwargs) -> Any:
-        return self.__getattr__(name)(*args, **kwargs)
+        with group_github_logs():
+            return self.__getattr__(name)(*args, **kwargs)
 
     def set_variable(self, name: str, value: Any) -> None:
         modules = self._find_modules_by_attr(name)

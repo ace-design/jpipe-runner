@@ -6,7 +6,27 @@ This module contains the utilities of jPipe Runner.
 """
 
 import json
+import os
 import re
+
+from contextlib import contextmanager
+
+
+@contextmanager
+def group_github_logs():
+    """Wrap logs around github action logging group tags if running in github action.
+    
+    See https://github.com/actions/toolkit/blob/main/docs/commands.md#group-and-ungroup-log-lines
+    for further details about github action logs grouping and related syntax.
+    """
+    is_running_in_github_actions = bool(os.getenv("GITHUB_ACTIONS"))
+    if is_running_in_github_actions:
+        print("##[group]", end="")
+    try:
+        yield
+    finally:
+        if is_running_in_github_actions:
+            print("##[endgroup]")
 
 
 def unquote_string(s: str) -> str:
