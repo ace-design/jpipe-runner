@@ -48,7 +48,9 @@ runs:
         PYTHON_PATH: ${{ inputs.python_path || 'python' }}
       working-directory: ${{ inputs.working_directory }}
       run: |
-        echo "::group::install jpipe-runner"
+        # jpipe-runner installation
+        echo "::group::Install jpipe-runner"
+
         # if $PYTHON_PATH -c "import jpipe_runner" &> /dev/null; then
         #    echo "jpipe-runner already installed"
         #    exit 0
@@ -61,6 +63,7 @@ runs:
           # Fallback to pip installation
           $PYTHON_PATH -m pip install -U 'git+https://github.com/ace-design/jpipe-runner.git@${{ inputs.version }}'
         fi
+
         echo "::endgroup::"
 
     - name: Run jpipe-runner
