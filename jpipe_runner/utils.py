@@ -19,13 +19,13 @@ def group_github_logs():
     See https://github.com/actions/toolkit/blob/main/docs/commands.md#group-and-ungroup-log-lines
     for further details about github action logs grouping and related syntax.
     """
-    is_running_in_github_actions = bool(os.getenv("GITHUB_ACTIONS"))
-    if is_running_in_github_actions:
-        print("##[group]", end="")
+    should_group_logs = os.getenv("JPIPE_RUNNER_GROUP_LOGS") == "1"
+    if should_group_logs:
+        print("##[group]Execution logs:")
     try:
         yield
     finally:
-        if is_running_in_github_actions:
+        if should_group_logs:
             print("##[endgroup]")
 
 
